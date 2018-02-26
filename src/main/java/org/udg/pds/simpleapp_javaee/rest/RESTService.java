@@ -1,6 +1,6 @@
 package org.udg.pds.simpleapp_javaee.rest;
 
-import org.udg.pds.simpleapp_javaee.model.User;
+import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.ToJSON;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ public class RESTService {
   }
 
   // Devuelve un JSON con vista personalizada del objeto
-  protected Response buildResponseWithView(Class<?> view, User u) {
+  protected Response buildResponseWithView(Class<?> view, Usuario u) {
     try {
       return Response.ok(toJSON.Object(view, u)).build();
     } catch (IOException e) {

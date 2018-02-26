@@ -1,7 +1,7 @@
 package org.udg.pds.simpleapp_javaee.util;
 
 import org.udg.pds.simpleapp_javaee.model.Task;
-import org.udg.pds.simpleapp_javaee.model.User;
+import org.udg.pds.simpleapp_javaee.model.Usuario;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -28,15 +28,15 @@ public class InitDB {
     log.log(Level.INFO, "Inicialización de registros en la base de datos...");
 
     try {
-      User exists = em.find(User.class, 1L);
+      Usuario exists = em.find(Usuario.class, 1L);
       if (exists == null) {
-        User u = new User("jo", "jo@hotmail.com", "jo");
+        Usuario u = new Usuario("jo", "jo@hotmail.com", "jo","Daniel","Bermudez Rodriguez","646094314");
         em.persist(u);
         Task t1 = new Task(new Date(), new Date(), false, "Tarea número 1");
         u.addTask(t1);
         t1.setUser(u);
 
-        User u2 = new User("tu", "tu@hotmail.com", "tu");
+        Usuario u2 = new Usuario("tu", "tu@hotmail.com", "tu","Sergio","Bermudez Rodriguez","629725139");
         em.persist(u2);
         Task t2 = new Task(new Date(), new Date(), false, "Tarea número 2");
         u2.addTask(t2);

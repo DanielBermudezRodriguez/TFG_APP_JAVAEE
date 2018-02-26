@@ -2,7 +2,7 @@ package org.udg.pds.simpleapp_javaee.service;
 
 import org.udg.pds.simpleapp_javaee.model.Tag;
 import org.udg.pds.simpleapp_javaee.model.Task;
-import org.udg.pds.simpleapp_javaee.model.User;
+import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.rest.RESTService;
 
 import javax.ejb.EJB;
@@ -25,12 +25,12 @@ public class TaskService {
   protected TagService tagService;
 
   @EJB
-  protected UserService userService;
+  protected UsuarioService userService;
 
   public Collection<Task> getTasks(Long id) {
     Collection<Task> tl = null;
     try {
-      User u = em.find(User.class, id);
+      Usuario u = em.find(Usuario.class, id);
       tl = u.getTasks();
       return tl;
     } catch (Exception ex) {
@@ -65,7 +65,7 @@ public class TaskService {
   public Task addTask(String text, Long userId,
                       Date created, Date limit) {
     try {
-      User user = em.find(User.class, userId);
+      Usuario user = em.find(Usuario.class, userId);
 
       Task task = new Task(created, limit, false, text);
 
@@ -109,7 +109,7 @@ public class TaskService {
 
   public Collection<Tag> getTaskTags(Long userId, Long id) {
     Task t = this.getTask(userId, id);
-    User u = t.getUser();
+    Usuario u = t.getUser();
 
     if (u.getId() != userId)
       throw new EJBException("El usuario no es propietario de la tarea.");

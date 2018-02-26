@@ -46,7 +46,7 @@ public class Task implements Serializable {
 
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+  private Usuario user;
 
   @JsonIgnore
   @ManyToMany
@@ -92,11 +92,11 @@ public class Task implements Serializable {
     this.completed = completed;
   }
 
-  public User getUser() {
+  public Usuario getUser() {
     return user;
   }
 
-  public void setUser(User user) {
+  public void setUser(Usuario user) {
     this.user = user;
   }
 

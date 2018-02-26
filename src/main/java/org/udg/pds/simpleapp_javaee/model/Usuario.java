@@ -11,20 +11,23 @@ import java.util.List;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username"}))
-public class User implements Serializable {
+public class Usuario implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Constructor vacio
-  public User() {
+  public Usuario() {
   }
 
   // Constructor con parámetros
-  public User(String username, String email, String password) {
+  public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono) {
 	  
     this.username = username;
     this.email = email;
     this.password = password;
+    this.nombre = nombre;
+    this.apellidos = apellidos;
+    this.telefono = telefono;
     this.tasks = new ArrayList<>();
     
   }
@@ -37,6 +40,18 @@ public class User implements Serializable {
   @NotNull
   @JsonView(Views.Public.class)
   private String username;
+  
+  @NotNull
+  @JsonView(Views.Public.class)
+  private String nombre;
+  
+  @NotNull
+  @JsonView(Views.Public.class)
+  private String apellidos;
+  
+  @NotNull
+  @JsonView(Views.Public.class)
+  private String telefono;
 
   @NotNull
   @JsonView(Views.Private.class)
@@ -82,7 +97,31 @@ public class User implements Serializable {
     this.email = email;
   }
 
-  public Collection<Task> getTasks() {
+  public String getNombre() {
+	return nombre;
+  }
+
+  public void setNombre(String nombre) {
+	this.nombre = nombre;
+  }
+
+  public String getApellidos() {
+	return apellidos;
+  }
+
+  public void setApellidos(String apellidos) {
+	this.apellidos = apellidos;
+  }
+
+  public String getTelefono() {
+	return telefono;
+  }
+
+  public void setTelefono(String telefono) {
+	this.telefono = telefono;
+  }
+
+public Collection<Task> getTasks() {
     // Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
 	// Esto significa que tiene que consultar el objeto (llamando size()), para obtener la lista inicializada. 
     // More: http://www.javabeat.net/jpa-lazy-eager-loading/
