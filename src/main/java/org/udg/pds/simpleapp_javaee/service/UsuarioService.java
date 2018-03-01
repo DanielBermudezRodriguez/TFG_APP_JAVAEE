@@ -2,6 +2,8 @@ package org.udg.pds.simpleapp_javaee.service;
 
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.rest.RESTService;
+import org.udg.pds.simpleapp_javaee.util.HashPassword;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -27,7 +29,8 @@ public class UsuarioService {
     } catch (Exception e) {
       throw new EJBException("No existe un usuario registrado con el email " + email);
     }
-    if (usuario.getPassword().equals(password)) return usuario;
+    // Ciframos contraseña enviada por parámetro para comparar con la almacenada en base de datos:
+    if (HashPassword.validarPassword(password,email, usuario.getPassword())) return usuario;
     else throw new EJBException("La contraseña es incorrecta");
     
   }
@@ -48,7 +51,7 @@ public class UsuarioService {
 				if (usuario != null) throw new EJBException("Ya existe un usuario con el nick " + username);
 			}catch(NoResultException ex) {
 				// No hay ningun usuario con ese nick
-				Usuario nuevoUsuario = new Usuario(username, email, password, nombre, apellidos, telefono);
+				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono);
 				em.persist(nuevoUsuario);
 				return nuevoUsuario;
 			}
