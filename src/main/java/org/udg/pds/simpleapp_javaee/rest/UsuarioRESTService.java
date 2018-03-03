@@ -37,7 +37,7 @@ public class UsuarioRESTService extends RESTService {
 	// Comprovar que el usuario no está logeado
     checkNotLoggedIn(req);
     // Devuelve el usuario si existe un usuario con el mail y contraseña pasados por parámetro
-    Usuario u = usuarioService.matchPassword(usuario.email, usuario.password);
+    Usuario u = usuarioService.verificarPassword(usuario.email, usuario.password);
     // Asignamos al identificador de sesión el identificador del usuario
     req.getSession().setAttribute("simpleapp_auth_id", u.getId());
     return buildResponseWithView(Views.Private.class, u);

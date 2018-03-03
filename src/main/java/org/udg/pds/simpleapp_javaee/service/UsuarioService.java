@@ -19,7 +19,7 @@ public class UsuarioService {
   @PersistenceContext
   private EntityManager em;
 
-  public Usuario matchPassword(String email, String password) {
+  public Usuario verificarPassword(String email, String password) {
 	  
     Query q = em.createQuery("select u from Usuario u where u.email=:email");
     q.setParameter("email", email);
