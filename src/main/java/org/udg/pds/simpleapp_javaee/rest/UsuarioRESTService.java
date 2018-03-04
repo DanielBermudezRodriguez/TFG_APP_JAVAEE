@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -38,6 +39,8 @@ public class UsuarioRESTService extends RESTService {
     checkNotLoggedIn(req);
     // Devuelve el usuario si existe un usuario con el mail y contraseña pasados por parámetro
     Usuario u = usuarioService.verificarPassword(usuario.email, usuario.password);
+    //Asignamos el id del usuario de la BD a la sessión:
+    req.getSession().setAttribute("simpleapp_auth_id", u.getId());
     // Asignamos al identificador de sesión el identificador del usuario
     req.getSession().setAttribute("simpleapp_auth_id", u.getId());
     return buildResponseWithView(Views.Private.class, u);
@@ -53,7 +56,7 @@ public class UsuarioRESTService extends RESTService {
       Long userId = getLoggedUser(req);
     } catch (WebApplicationException ex) {
       // Usuario no está logeado puede registrarse
-      return buildResponseWithView(Views.Private.class, usuarioService.registro(ru.username, ru.email, ru.password, ru.nombre, ru.apellidos, ru.telefono));
+      return buildResponseWithView(Views.Private.class, usuarioService.registro(ru.username, ru.email, ru.password, ru.nombre, ru.apellidos, ru.telefono,req));
     }
 
     throw new WebApplicationException("No se puede registrar un usuario logeado.");

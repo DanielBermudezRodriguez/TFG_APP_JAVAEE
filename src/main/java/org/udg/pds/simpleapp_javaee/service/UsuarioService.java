@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 
 @Stateless
 @LocalBean
@@ -35,7 +36,7 @@ public class UsuarioService {
     
   }
 
-	public Usuario registro(String username, String email, String password, String nombre, String apellidos,String telefono) {
+	public Usuario registro(String username, String email, String password, String nombre, String apellidos,String telefono, HttpServletRequest req) {
 		Usuario usuario = null;
 		Query q = em.createQuery("select u from Usuario u where u.email=:email");
 		q.setParameter("email", email);
@@ -53,6 +54,8 @@ public class UsuarioService {
 				// No hay ningun usuario con ese nick
 				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono);
 				em.persist(nuevoUsuario);
+			    //Asignamos el id del usuario de la BD a la sessión:
+			    req.getSession().setAttribute("simpleapp_auth_id", nuevoUsuario.getId());
 				return nuevoUsuario;
 			}
 		}
