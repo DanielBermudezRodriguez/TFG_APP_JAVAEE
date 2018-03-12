@@ -30,7 +30,7 @@ public class InitDB {
   private void init() {
     log.log(Level.INFO, "Inicialización de registros en la base de datos...");
 
-    try {
+   /* try {
       Usuario exists = em.find(Usuario.class, 1L);
       if (exists == null) {
         Usuario u = new Usuario("jo", "jo@hotmail.com", "jo","Daniel","Bermudez Rodriguez","646094314");
@@ -90,6 +90,6 @@ public class InitDB {
 
     } catch (Exception ex) {
       log.log(Level.INFO, "Error al inicializar los datos en la base de datos.");
-    }
+    }*/
   }
 }

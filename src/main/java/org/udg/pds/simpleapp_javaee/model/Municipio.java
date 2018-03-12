@@ -36,6 +36,15 @@ public class Municipio implements Serializable{
 	  @JsonIgnore
 	  @ManyToOne(fetch = FetchType.LAZY)
 	  private Provincia provincia;
+	  
+	  @NotNull
+	  private String slug;
+	  
+	  @NotNull
+	  private double latitud;
+	  
+	  @NotNull
+	  private double longitud;
 
 	public Long getId() {
 		return id;
@@ -60,8 +69,30 @@ public class Municipio implements Serializable{
 	public void setProvincia(Provincia provincia) {
 		this.provincia = provincia;
 	}
-	
-	
+
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	public double getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(double latitud) {
+		this.latitud = latitud;
+	}
+
+	public double getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(double longitud) {
+		this.longitud = longitud;
+	}
 	  
 	
 }
