@@ -1,3 +1,6 @@
+INSERT INTO Pais VALUES (1, 'España');
+
+INSERT INTO Provincia (id,provincia,pais_id) VALUES (1,  'Álava',  1);
 INSERT INTO Provincia (id,provincia,pais_id) VALUES (2,  'Albacete',  1);
 INSERT INTO Provincia (id,provincia,pais_id) VALUES (3,  'Alicante',  1);
 INSERT INTO Provincia (id,provincia,pais_id) VALUES (4,  'Almería',  1);

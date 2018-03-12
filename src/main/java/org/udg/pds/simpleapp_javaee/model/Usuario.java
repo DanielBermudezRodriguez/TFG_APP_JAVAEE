@@ -28,6 +28,7 @@ public class Usuario implements Serializable {
     this.nombre = nombre;
     this.apellidos = apellidos;
     this.telefono = telefono;
+    this.municipio = new Municipio();
     this.tasks = new ArrayList<>();
     
   }
@@ -60,6 +61,9 @@ public class Usuario implements Serializable {
   @NotNull
   @JsonIgnore
   private String password;
+  
+  @NotNull
+  private Municipio municipio;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   @JsonView(Views.Complete.class)
@@ -120,6 +124,14 @@ public class Usuario implements Serializable {
   public void setTelefono(String telefono) {
 	this.telefono = telefono;
   }
+  
+  public Municipio getMunicipio() {
+	return municipio;
+  }
+
+public void setMunicipio(Municipio municipio) {
+	this.municipio = municipio;
+}
 
 public Collection<Task> getTasks() {
     // Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
