@@ -8,9 +8,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import org.udg.pds.simpleapp_javaee.model.Pais;
-import org.udg.pds.simpleapp_javaee.model.Task;
+
 
 @Stateless
 @LocalBean
@@ -23,7 +22,7 @@ public class PaisService {
 	public Collection<Pais> obtenerPaises() {
 		Collection<Pais> paises = null;
         try {
-            Query q = em.createQuery("select p.id , p.pais from Pais p ");
+            Query q = em.createQuery("select p from Pais p ");
             if (q.getResultList().isEmpty()) {
             	throw new EJBException("No hay países disponibles");
             }

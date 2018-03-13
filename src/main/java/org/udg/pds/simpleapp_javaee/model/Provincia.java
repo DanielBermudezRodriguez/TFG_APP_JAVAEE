@@ -44,6 +44,7 @@ public class Provincia implements Serializable {
 	  private Pais pais;
 	  
 	  @OneToMany(cascade = CascadeType.ALL, mappedBy = "provincia")
+	  @JsonIgnore
 	  private Collection<Municipio> municipios;
 
 	public Long getId() {

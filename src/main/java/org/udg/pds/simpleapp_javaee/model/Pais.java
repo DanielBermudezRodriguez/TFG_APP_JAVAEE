@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Pais implements Serializable {
 	
@@ -35,6 +37,7 @@ public class Pais implements Serializable {
 	  private String pais;
 	  
 	  @OneToMany(cascade = CascadeType.ALL, mappedBy = "pais")
+	  @JsonIgnore
 	  private Collection<Provincia> provincias;
 
 	public Long getId() {
