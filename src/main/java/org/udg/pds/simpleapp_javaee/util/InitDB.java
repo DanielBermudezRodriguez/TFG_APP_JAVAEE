@@ -3,9 +3,7 @@ package org.udg.pds.simpleapp_javaee.util;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Pais;
 import org.udg.pds.simpleapp_javaee.model.Provincia;
-import org.udg.pds.simpleapp_javaee.model.Task;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;

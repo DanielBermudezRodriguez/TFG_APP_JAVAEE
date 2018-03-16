@@ -13,38 +13,38 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Municipio implements Serializable{
+public class Municipio implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	  // Constructor vacio
-	  public Municipio() {
-	  }
 
-	  // Constructor con parámetros
-	  public Municipio(String municipio) {	  
-	    this.municipio = municipio;
-	  }
-	
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
-	  private Long id;
-	  
-	  @NotNull
-	  private String municipio;
-	  
-	  @JsonIgnore
-	  @ManyToOne(fetch = FetchType.LAZY)
-	  private Provincia provincia;
-	  
-	  @NotNull
-	  private String slug;
-	  
-	  @NotNull
-	  private double latitud;
-	  
-	  @NotNull
-	  private double longitud;
+	// Constructor vacio
+	public Municipio() {
+	}
+
+	// Constructor con parámetros
+	public Municipio(String municipio) {
+		this.municipio = municipio;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotNull
+	private String municipio;
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Provincia provincia;
+
+	@NotNull
+	private String slug;
+
+	@NotNull
+	private double latitud;
+
+	@NotNull
+	private double longitud;
 
 	public Long getId() {
 		return id;
@@ -93,6 +93,5 @@ public class Municipio implements Serializable{
 	public void setLongitud(double longitud) {
 		this.longitud = longitud;
 	}
-	  
-	
+
 }

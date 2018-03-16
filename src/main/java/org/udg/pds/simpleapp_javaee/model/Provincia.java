@@ -19,33 +19,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Provincia implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	  // Constructor vacio
-	  public Provincia() {
-	  }
 
-	  // Constructor con parámetros
-	  public Provincia(String provincia) {	  
-	    this.provincia = provincia;
-	    this.municipios = new ArrayList<>();
-	  }
-	
-	  @Id
-	  @GeneratedValue(strategy = GenerationType.IDENTITY)
-	  private Long id;
-	  
-	  @NotNull
-	  private String provincia;
-	  
-	  @JsonIgnore
-	  @ManyToOne(fetch = FetchType.LAZY)
-	  private Pais pais;
-	  
-	  @OneToMany(cascade = CascadeType.ALL, mappedBy = "provincia")
-	  @JsonIgnore
-	  private Collection<Municipio> municipios;
+	private static final long serialVersionUID = 1L;
+
+	// Constructor vacio
+	public Provincia() {
+	}
+
+	// Constructor con parámetros
+	public Provincia(String provincia) {
+		this.provincia = provincia;
+		this.municipios = new ArrayList<>();
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotNull
+	private String provincia;
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Pais pais;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "provincia")
+	@JsonIgnore
+	private Collection<Municipio> municipios;
 
 	public Long getId() {
 		return id;
@@ -70,21 +70,22 @@ public class Provincia implements Serializable {
 	public void setPais(Pais pais) {
 		this.pais = pais;
 	}
-	
+
 	public Collection<Municipio> getMunicipios() {
-	    // Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
-		// Esto significa que tiene que consultar el objeto (llamando size()), para obtener la lista inicializada. 
-	    // More: http://www.javabeat.net/jpa-lazy-eager-loading/
-	    municipios.size();
-	    return municipios;
-	  }
+		// Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
+		// Esto significa que tiene que consultar el objeto (llamando size()), para
+		// obtener la lista inicializada.
+		// More: http://www.javabeat.net/jpa-lazy-eager-loading/
+		municipios.size();
+		return municipios;
+	}
 
-	  public void setMunicipios(List<Municipio> municipios) {
-	    this.municipios = municipios;
-	  }
+	public void setMunicipios(List<Municipio> municipios) {
+		this.municipios = municipios;
+	}
 
-	  public void addMunicipios(Municipio municipio) {
-		  municipios.add(municipio);
-	  }
-	
+	public void addMunicipios(Municipio municipio) {
+		municipios.add(municipio);
+	}
+
 }

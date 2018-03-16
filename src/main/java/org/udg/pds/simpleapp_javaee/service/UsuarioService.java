@@ -52,7 +52,7 @@ public class UsuarioService {
 				if (usuario != null) throw new EJBException("Ya existe un usuario con el nick " + username);
 			}catch(NoResultException ex) {
 				// No hay ningun usuario con ese nick
-				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono);
+				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono, "tokenDefect");
 				em.persist(nuevoUsuario);
 			    //Asignamos el id del usuario de la BD a la sessión:
 			    req.getSession().setAttribute("simpleapp_auth_id", nuevoUsuario.getId());
@@ -66,11 +66,6 @@ public class UsuarioService {
     return em.find(Usuario.class, id);
   }
 
-  public Usuario getUserComplete(Long loggedId) {
-    Usuario u = getUser(loggedId);
-    u.getTasks().size();
-    return u;
-  }
   
   public RESTService.ID remove(Long userId) {
 	    Usuario u = getUser(userId);

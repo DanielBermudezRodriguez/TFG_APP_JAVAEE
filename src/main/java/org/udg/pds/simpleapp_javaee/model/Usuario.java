@@ -5,148 +5,153 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "username"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "email", "username" }))
 public class Usuario implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // Constructor vacio
-  public Usuario() {
-  }
+	// Constructor vacio
+	public Usuario() {
+	}
 
-  // Constructor con parámetros
-  public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono) {
-	  
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    this.nombre = nombre;
-    this.apellidos = apellidos;
-    this.telefono = telefono;
-    this.municipio = new Municipio();
-    this.tasks = new ArrayList<>();
-    
-  }
+	// Constructor con parámetros
+	public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono,
+			String tokenFireBase) {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonView(Views.Private.class)
-  protected Long id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.telefono = telefono;
+		this.tokenFireBase = tokenFireBase;
 
-  @NotNull
-  @JsonView(Views.Public.class)
-  private String username;
-  
-  @NotNull
-  @JsonView(Views.Public.class)
-  private String nombre;
-  
-  @NotNull
-  @JsonView(Views.Public.class)
-  private String apellidos;
-  
-  @NotNull
-  @JsonView(Views.Public.class)
-  private String telefono;
+		this.municipio = new Municipio();
+		this.ubicacionGPS = new Ubicacion();
 
-  @NotNull
-  @JsonView(Views.Private.class)
-  private String email;
+	}
 
-  @NotNull
-  @JsonIgnore
-  private String password;
-  
-  @NotNull
-  private Municipio municipio;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.Private.class)
+	protected Long id;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-  @JsonView(Views.Complete.class)
-  private Collection<Task> tasks;
+	@NotNull
+	@JsonIgnore
+	private String tokenFireBase;
 
-  public Long getId() {
-    return id;
-  }
+	@NotNull
+	@JsonView(Views.Public.class)
+	private String username;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	@NotNull
+	@JsonView(Views.Public.class)
+	private String nombre;
 
-  public String getPassword() {
-    return password;
-  }
+	@NotNull
+	@JsonView(Views.Public.class)
+	private String apellidos;
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+	@NotNull
+	@JsonView(Views.Public.class)
+	private String telefono;
 
-  public String getUsername() {
-    return username;
-  }
+	@NotNull
+	@JsonView(Views.Private.class)
+	private String email;
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+	@NotNull
+	@JsonIgnore
+	private String password;
 
-  public String getEmail() {
-    return email;
-  }
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Municipio municipio;
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Ubicacion ubicacionGPS;
 
-  public String getNombre() {
-	return nombre;
-  }
+	public Long getId() {
+		return id;
+	}
 
-  public void setNombre(String nombre) {
-	this.nombre = nombre;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public String getApellidos() {
-	return apellidos;
-  }
+	public String getPassword() {
+		return password;
+	}
 
-  public void setApellidos(String apellidos) {
-	this.apellidos = apellidos;
-  }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-  public String getTelefono() {
-	return telefono;
-  }
+	public String getUsername() {
+		return username;
+	}
 
-  public void setTelefono(String telefono) {
-	this.telefono = telefono;
-  }
-  
-  public Municipio getMunicipio() {
-	return municipio;
-  }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-public void setMunicipio(Municipio municipio) {
-	this.municipio = municipio;
-}
+	public String getEmail() {
+		return email;
+	}
 
-public Collection<Task> getTasks() {
-    // Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
-	// Esto significa que tiene que consultar el objeto (llamando size()), para obtener la lista inicializada. 
-    // More: http://www.javabeat.net/jpa-lazy-eager-loading/
-    tasks.size();
-    return tasks;
-  }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-  public void setTasks(List<Task> ts) {
-    this.tasks = ts;
-  }
+	public String getNombre() {
+		return nombre;
+	}
 
-  public void addTask(Task task) {
-    tasks.add(task);
-  }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getApellidos() {
+		return apellidos;
+	}
+
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public Municipio getMunicipio() {
+		return municipio;
+	}
+
+	public void setMunicipio(Municipio municipio) {
+		this.municipio = municipio;
+	}
+
+	public String getTokenFireBase() {
+		return tokenFireBase;
+	}
+
+	public void setTokenFireBase(String tokenFireBase) {
+		this.tokenFireBase = tokenFireBase;
+	}
+
+	public Ubicacion getUbicacionGPS() {
+		return ubicacionGPS;
+	}
+
+	public void setUbicacionGPS(Ubicacion ubicacionGPS) {
+		this.ubicacionGPS = ubicacionGPS;
+	}
 
 }
