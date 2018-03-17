@@ -1,7 +1,7 @@
 package org.udg.pds.simpleapp_javaee.service;
 
-import java.util.Collection;
 
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -19,8 +19,8 @@ public class PaisService {
     protected EntityManager em;
 	
 	@SuppressWarnings("unchecked")
-	public Collection<Pais> obtenerPaises() {
-		Collection<Pais> paises = null;
+	public List<Pais> obtenerPaises() {
+		List<Pais> paises = null;
         try {
             Query q = em.createQuery("select p from Pais p ");
             if (q.getResultList().isEmpty()) {

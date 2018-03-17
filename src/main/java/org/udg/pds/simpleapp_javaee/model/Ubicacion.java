@@ -2,10 +2,14 @@ package org.udg.pds.simpleapp_javaee.model;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Ubicacion implements Serializable {
@@ -25,27 +29,23 @@ public class Ubicacion implements Serializable {
 	@NotNull
 	private String direccion;
 
-	@NotNull
-	private String municipio;
-
-	@NotNull
-	private String provincia;
-
-	@NotNull
-	private String pais;
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Municipio municipio;
 
 	public Ubicacion() {
 
 	}
 
-	public Ubicacion(double latitud, double longitud, String direccion, String municipio, String provincia,
-			String pais) {
+	public Ubicacion(double latitud, double longitud, String direccion) {
 		this.latitud = latitud;
 		this.longitud = longitud;
 		this.direccion = direccion;
-		this.municipio = municipio;
-		this.provincia = provincia;
-		this.pais = pais;
+
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public double getLatitud() {
@@ -72,28 +72,12 @@ public class Ubicacion implements Serializable {
 		this.direccion = direccion;
 	}
 
-	public String getMunicipio() {
+	public Municipio getMunicipio() {
 		return municipio;
 	}
 
-	public void setMunicipio(String municipio) {
+	public void setMunicipio(Municipio municipio) {
 		this.municipio = municipio;
-	}
-
-	public String getProvincia() {
-		return provincia;
-	}
-
-	public void setProvincia(String provincia) {
-		this.provincia = provincia;
-	}
-
-	public String getPais() {
-		return pais;
-	}
-
-	public void setPais(String pais) {
-		this.pais = pais;
 	}
 
 }

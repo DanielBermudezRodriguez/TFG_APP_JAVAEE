@@ -2,9 +2,7 @@ package org.udg.pds.simpleapp_javaee.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,16 +20,6 @@ public class Provincia implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// Constructor vacio
-	public Provincia() {
-	}
-
-	// Constructor con parámetros
-	public Provincia(String provincia) {
-		this.provincia = provincia;
-		this.municipios = new ArrayList<>();
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -45,14 +33,18 @@ public class Provincia implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "provincia")
 	@JsonIgnore
-	private Collection<Municipio> municipios;
+	private List<Municipio> municipios;
+
+	public Provincia() {
+	}
+
+	public Provincia(String provincia) {
+		this.provincia = provincia;
+		this.municipios = new ArrayList<>();
+	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getProvincia() {
@@ -71,11 +63,7 @@ public class Provincia implements Serializable {
 		this.pais = pais;
 	}
 
-	public Collection<Municipio> getMunicipios() {
-		// Dado que las tareas están controladas por JPA, tiene carga LAZY por defecto.
-		// Esto significa que tiene que consultar el objeto (llamando size()), para
-		// obtener la lista inicializada.
-		// More: http://www.javabeat.net/jpa-lazy-eager-loading/
+	public List<Municipio> getMunicipios() {
 		municipios.size();
 		return municipios;
 	}

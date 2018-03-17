@@ -2,36 +2,22 @@ package org.udg.pds.simpleapp_javaee.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateDeserializer;
+import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateSerializer;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "email", "username" }))
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	// Constructor vacio
-	public Usuario() {
-	}
-
-	// Constructor con parámetros
-	public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono,
-			String tokenFireBase) {
-
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		this.telefono = telefono;
-		this.tokenFireBase = tokenFireBase;
-
-		this.municipio = new Municipio();
-		this.ubicacionGPS = new Ubicacion();
-
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +49,11 @@ public class Usuario implements Serializable {
 	private String email;
 
 	@NotNull
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(as = JsonDateDeserializer.class)
+	private Date fechaRegistro;
+
+	@NotNull
 	@JsonIgnore
 	private String password;
 
@@ -71,15 +62,44 @@ public class Usuario implements Serializable {
 	private Municipio municipio;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	private Ubicacion ubicacionGPS;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Deporte> deportesFavoritos;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "administrador")
+	@JsonIgnore
+	private List<Evento> eventosCreados;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Evento> eventosRegistrado;
+
+	public Usuario() {
+	}
+
+	public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono,
+			String tokenFireBase, Date fechaRegistro) {
+
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.telefono = telefono;
+		this.tokenFireBase = tokenFireBase;
+		this.fechaRegistro = fechaRegistro;
+
+		this.deportesFavoritos = new ArrayList<>();
+		this.eventosCreados = new ArrayList<>();
+		this.eventosRegistrado = new ArrayList<>();
+
+	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getPassword() {
@@ -152,6 +172,49 @@ public class Usuario implements Serializable {
 
 	public void setUbicacionGPS(Ubicacion ubicacionGPS) {
 		this.ubicacionGPS = ubicacionGPS;
+	}
+
+	public List<Deporte> getDeportesFavoritos() {
+		deportesFavoritos.size();
+		return deportesFavoritos;
+	}
+
+	public void setDeportesFavoritos(List<Deporte> deportesFavoritos) {
+		this.deportesFavoritos = deportesFavoritos;
+	}
+
+	public void addDeportesFavoritos(Deporte deporte) {
+		deportesFavoritos.add(deporte);
+	}
+
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+
+	public List<Evento> getEventosCreados() {
+		eventosCreados.size();
+		return eventosCreados;
+	}
+
+	public void setEventosCreados(List<Evento> eventos) {
+		this.eventosCreados = eventos;
+	}
+
+	public void addEventosCreados(Evento evento) {
+		this.eventosCreados.add(evento);
+	}
+
+	public List<Evento> getEventosRegistrado() {
+		eventosRegistrado.size();
+		return eventosRegistrado;
+	}
+
+	public void setEventosRegistrado(List<Evento> eventosRegistrado) {
+		this.eventosRegistrado = eventosRegistrado;
 	}
 
 }

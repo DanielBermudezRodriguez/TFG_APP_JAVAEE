@@ -4,6 +4,8 @@ import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.rest.RESTService;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
 
+import java.util.Date;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -52,7 +54,7 @@ public class UsuarioService {
 				if (usuario != null) throw new EJBException("Ya existe un usuario con el nick " + username);
 			}catch(NoResultException ex) {
 				// No hay ningun usuario con ese nick
-				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono, "tokenDefect");
+				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono, "tokenDefect",new Date());
 				em.persist(nuevoUsuario);
 			    //Asignamos el id del usuario de la BD a la sessión:
 			    req.getSession().setAttribute("simpleapp_auth_id", nuevoUsuario.getId());

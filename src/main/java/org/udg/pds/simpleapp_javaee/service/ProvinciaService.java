@@ -1,7 +1,7 @@
 package org.udg.pds.simpleapp_javaee.service;
 
-import java.util.Collection;
 
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -18,9 +18,9 @@ public class ProvinciaService {
     protected EntityManager em;
     
 	@SuppressWarnings("unchecked")
-	public Collection<Provincia> obtenerProvinciasPais(Long idPais) {
+	public List<Provincia> obtenerProvinciasPais(Long idPais) {
 		try {
-			Collection<Provincia> provincias = null;
+			List<Provincia> provincias = null;
 			Pais pais = em.find(Pais.class,idPais);
 			provincias = pais.getProvincias();
 			return provincias;
