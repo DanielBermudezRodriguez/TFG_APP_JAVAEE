@@ -16,7 +16,7 @@ import org.udg.pds.simpleapp_javaee.util.ToJSON;
 
 @Path("/provincias")
 @RequestScoped
-public class ProvinciaRESTService extends RESTService{
+public class ProvinciaRESTService extends GenericRESTService{
 	
     @EJB
     private ProvinciaService provinciaService;

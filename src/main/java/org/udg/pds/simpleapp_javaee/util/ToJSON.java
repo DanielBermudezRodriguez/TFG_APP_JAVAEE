@@ -7,47 +7,35 @@ import javax.ejb.Singleton;
 import java.io.IOException;
 import java.io.StringWriter;
 
-
 @Singleton
 public class ToJSON {
 
-  ObjectMapper mapper;
+	ObjectMapper mapper;
 
-  @PostConstruct
-  void init() {
-      mapper = new ObjectMapper();
-  }
+	@PostConstruct
+	void init() {
+		mapper = new ObjectMapper();
+	}
 
-  // String respuesta
-  public String Object(Object o) throws IOException {
-    StringWriter sw = new StringWriter();
-    mapper.writeValue(sw, o);
-    return sw.toString();
-  }
+	public String Object(Object o) throws IOException {
+		StringWriter sw = new StringWriter();
+		mapper.writeValue(sw, o);
+		return sw.toString();
+	}
 
-  // String respuesta con vistas
-  public String Object(Class<?> view, Object o) throws IOException {
-    StringWriter sw = new StringWriter();
-    mapper.writerWithView(view).writeValue(sw, o);
-    return sw.toString();
-  }
+	public String Object(Class<?> view, Object o) throws IOException {
+		StringWriter sw = new StringWriter();
+		mapper.writerWithView(view).writeValue(sw, o);
+		return sw.toString();
+	}
 
-  // String error respuesta con tipo
-  /*public String buildError(String type, String message) {
-    try {
-      return this.Object(new Error(type, message));
-    } catch (Exception e) {
-      return "{\"type\": \"Serialize error\", \"message\": \"" + e.getMessage() + "\", \"originalMsg\": " + message + "\"}";
-    }
-  }*/
-  
-  // String error respuesta sin tipo
-  public String buildError(String message) {
-    try {
-      return this.Object(new Error(message));
-    } catch (Exception e) {
-      return "{\"type\": \"Serialize error\", \"message\": \"" + e.getMessage() + "\", \"originalMsg\": " + message + "\"}";
-    }
-  }
-  
+	public String buildError(String message) {
+		try {
+			return this.Object(new Error(message));
+		} catch (Exception e) {
+			return "{\"type\": \"Serialize error\", \"message\": \"" + e.getMessage() + "\", \"originalMsg\": "
+					+ message + "\"}";
+		}
+	}
+
 }

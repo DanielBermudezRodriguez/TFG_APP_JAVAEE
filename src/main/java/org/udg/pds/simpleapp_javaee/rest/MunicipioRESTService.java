@@ -9,14 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.udg.pds.simpleapp_javaee.service.MunicipioService;
-import org.udg.pds.simpleapp_javaee.service.ProvinciaService;
 import org.udg.pds.simpleapp_javaee.util.ToJSON;
 
 @Path("/municipios")
 @RequestScoped
-public class MunicipioRESTService extends RESTService {
+public class MunicipioRESTService extends GenericRESTService {
 	
     @EJB
     private MunicipioService municipioService;

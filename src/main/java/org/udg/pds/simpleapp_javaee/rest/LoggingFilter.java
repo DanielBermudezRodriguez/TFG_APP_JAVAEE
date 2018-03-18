@@ -12,18 +12,18 @@ import java.io.IOException;
 @Provider
 public class LoggingFilter implements ContainerResponseFilter {
 
-  private static final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
-  public void filter(ContainerRequestContext requestContext,
-                     ContainerResponseContext responseContext) throws IOException {
-    String method = requestContext.getMethod();
+	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
+			throws IOException {
+		String method = requestContext.getMethod();
 
-    logger.info("Requesting " + method + " for path " + requestContext.getUriInfo().getPath() + " with MIME type " + requestContext.getMediaType());
-    // String json = IOUtils.toString(requestContext.getEntityStream());
-    Object entity = responseContext.getEntity();
-    if (entity != null) {
-      logger.info("Response " + new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(entity));
-    }
+		logger.info("Requesting " + method + " for path " + requestContext.getUriInfo().getPath() + " with MIME type "
+				+ requestContext.getMediaType());
+		Object entity = responseContext.getEntity();
+		if (entity != null) {
+			logger.info("Response " + new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(entity));
+		}
 
-  }
+	}
 }

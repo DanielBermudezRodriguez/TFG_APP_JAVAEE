@@ -1,105 +1,75 @@
 package org.udg.pds.simpleapp_javaee.rest;
 
 import org.udg.pds.simpleapp_javaee.model.Usuario;
-import org.udg.pds.simpleapp_javaee.model.Views;
 import org.udg.pds.simpleapp_javaee.service.UsuarioService;
-import org.udg.pds.simpleapp_javaee.util.ToJSON;
+import org.udg.pds.simpleapp_javaee.util.Global;
+import request.RequestUsuario.RequestLoginUsuario;
+import request.RequestUsuario.RequestRegistroUsuario;
+import response.ResponseUsuario;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-// Clase utilizada para recibir todas las peticiones REST relacionadas con los usuarios
-@Path("/usuarios")
+@Path("/usuario")
 @RequestScoped
-public class UsuarioRESTService extends RESTService {
+public class UsuarioRESTService extends GenericRESTService {
 
-  // EJB utilizada para la lógica de negocio de las operaciones con usuarios
-  @EJB
-  UsuarioService usuarioService;
+	@EJB
+	UsuarioService usuarioService;
 
-  @Inject
-  ToJSON toJSON;
+	@POST
+	@Path("login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response autenticacion(@Context HttpServletRequest req, @Valid RequestLoginUsuario login) {
 
-  @POST
-  @Path("login")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response autenticacion(@Context HttpServletRequest req, @Valid LoginUsuario usuario) {
-	  
-	// Comprovar que el usuario no está logeado
-    checkNotLoggedIn(req);
-    // Devuelve el usuario si existe un usuario con el mail y contraseña pasados por parámetro
-    Usuario u = usuarioService.verificarPassword(usuario.email, usuario.password);
-    //Asignamos el id del usuario de la BD a la sessión:
-    req.getSession().setAttribute("simpleapp_auth_id", u.getId());
-    // Asignamos al identificador de sesión el identificador del usuario
-    req.getSession().setAttribute("simpleapp_auth_id", u.getId());
-    return buildResponseWithView(Views.Private.class, u);
-  }
-  
-  @Path("registro")
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response registro(RegistroUsuario ru, @Context HttpServletRequest req) {
+		if (!estaUsuarioLogeado(req)) {
+			Usuario u = usuarioService.verificarPassword(login);
+			req.getSession().setAttribute(Global.AUTH_ID, u.getId());
+			return buildResponse(new ResponseUsuario.ResponseLoginUsuario(u));
+		} else {
+			throw new WebApplicationException("Ya ha iniciado sesión");
+		}
 
-    try {
-      // Comprueva si el usuario está logeado, si lo está devuelve el identificador de sesión  
-      Long userId = getLoggedUser(req);
-    } catch (WebApplicationException ex) {
-      // Usuario no está logeado puede registrarse
-      return buildResponseWithView(Views.Private.class, usuarioService.registro(ru.username, ru.email, ru.password, ru.nombre, ru.apellidos, ru.telefono,req));
-    }
+	}
 
-    throw new WebApplicationException("No se puede registrar un usuario logeado.");
-  }
+	@Path("registro")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response registro(@Context HttpServletRequest req, @Valid RequestRegistroUsuario registro) {
 
-  @DELETE
-  @Path("{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response deleteUser(@Context HttpServletRequest req, @PathParam("id") Long userId) {
-	  
-	// Comprueva si el usuario está logeado, si lo está devuelve el identificador de sesión  
-    Long loggedUserId = getLoggedUser(req);
+		if (!estaUsuarioLogeado(req)) {
+			Usuario u = usuarioService.registro(registro);
+			req.getSession().setAttribute(Global.AUTH_ID, u.getId());
+			return buildResponse(new ResponseUsuario.ResponseRegistroUsuario(u));
+		}
+		throw new WebApplicationException("No se puede registrar un usuario logeado.");
 
-    if (!loggedUserId.equals(userId))
-      throw new WebApplicationException("No se pueden borrar otros usuarios!");
+	}
 
-    return buildResponse(usuarioService.remove(userId));
-    
-  }
+	@Path("logout/{id}")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logout(@Context HttpServletRequest req, @PathParam("id") Long idUsuario) {
 
-  // Clase estática que contiene los parámetros del login de un usuario
-  static class LoginUsuario {
-    @NotNull public String email;
-    @NotNull public String password;
-  }
+		if (!estaUsuarioLogeado(req)) {
+			Long idSesion = obtenerUsuarioLogeado(req);
+			if (idSesion.equals(idUsuario)) {
+				HttpSession session = req.getSession();
+				session.invalidate();
+				return buildResponse(idUsuario);
+			} else {
+				throw new WebApplicationException("No se puede cerrar sesión de otros usuarios.");
+			}
+		}
+		throw new WebApplicationException("No se puede cerrar sesión sino está autenticado.");
 
-  // Clase estática con atributos necesarios para el registro de un nuevo usuario
-  static class RegistroUsuario {
-    @NotNull public String username;
-    @NotNull public String email;
-    @NotNull public String password;
-    @NotNull public String nombre;
-    @NotNull public String apellidos;
-    @NotNull public String telefono;
-  }
-
-  // Clase estática con variable identificador
-  static class ID {
-    public Long id;
-
-    public ID(Long id) {
-      this.id = id;
-    }
-  }
+	}
 
 }

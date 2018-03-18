@@ -1,11 +1,12 @@
 package org.udg.pds.simpleapp_javaee.service;
 
+import org.udg.pds.simpleapp_javaee.model.Deporte;
+import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
-import org.udg.pds.simpleapp_javaee.rest.RESTService;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
-
+import request.RequestUsuario.RequestLoginUsuario;
+import request.RequestUsuario.RequestRegistroUsuario;
 import java.util.Date;
-
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -13,66 +14,67 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
 
 @Stateless
 @LocalBean
 public class UsuarioService {
 
-  @PersistenceContext
-  private EntityManager em;
+	@PersistenceContext
+	private EntityManager em;
 
-  public Usuario verificarPassword(String email, String password) {
-	  
-    Query q = em.createQuery("select u from Usuario u where u.email=:email");
-    q.setParameter("email", email);
-    Usuario usuario;
-    try {
-    	usuario = (Usuario) q.getSingleResult(); 
-    } catch (Exception e) {
-      throw new EJBException("No existe un usuario registrado con el email " + email);
-    }
-    // Ciframos contraseña enviada por parámetro para comparar con la almacenada en base de datos:
-    if (HashPassword.validarPassword(password,email, usuario.getPassword())) return usuario;
-    else throw new EJBException("La contraseña es incorrecta");
-    
-  }
+	public Usuario verificarPassword(RequestLoginUsuario login) {
 
-	public Usuario registro(String username, String email, String password, String nombre, String apellidos,String telefono, HttpServletRequest req) {
-		Usuario usuario = null;
 		Query q = em.createQuery("select u from Usuario u where u.email=:email");
-		q.setParameter("email", email);
+		q.setParameter("email", login.email);
+		Usuario usuario;
 		try {
 			usuario = (Usuario) q.getSingleResult();
-			if (usuario != null) throw new EJBException("Ya existe un usuario con el email " + email);
-		}catch (NoResultException e) {
-			// No hay ningun usuario con ese mail
+		} catch (Exception e) {
+			throw new EJBException("No existe un usuario registrado con el email " + login.email);
+		}
+
+		if (HashPassword.validarPassword(login.password, login.email, usuario.getPassword())) {
+			usuario.setTokenFireBase(login.tokenFireBase);
+			return usuario;
+		} else
+			throw new EJBException("Email o contraseña incorrectos");
+
+	}
+
+	public Usuario registro(RequestRegistroUsuario registro) {
+
+		Usuario usuario = null;
+		Query q = em.createQuery("select u from Usuario u where u.email=:email");
+		q.setParameter("email", registro.email);
+		try {
+			usuario = (Usuario) q.getSingleResult();
+			if (usuario != null)
+				throw new EJBException("Ya existe un usuario con el email " + registro.email);
+		} catch (NoResultException e) {
 			q = em.createQuery("select u from Usuario u where u.username=:username");
-			q.setParameter("username", username);
+			q.setParameter("username", registro.username);
 			try {
 				usuario = (Usuario) q.getSingleResult();
-				if (usuario != null) throw new EJBException("Ya existe un usuario con el nick " + username);
-			}catch(NoResultException ex) {
-				// No hay ningun usuario con ese nick
-				Usuario nuevoUsuario = new Usuario(username, email, HashPassword.passwordHash(password,email), nombre, apellidos, telefono, "tokenDefect",new Date());
+				if (usuario != null)
+					throw new EJBException("Ya existe un usuario con el Nick " + registro.username);
+			} catch (NoResultException ex) {
+				Usuario nuevoUsuario = new Usuario(registro.username, registro.email,
+						HashPassword.passwordHash(registro.password, registro.email), registro.nombre,
+						registro.apellidos, registro.telefono, registro.tokenFireBase, new Date());
+				nuevoUsuario.setMunicipio(em.find(Municipio.class, registro.municipio));
+				for (Long deporte : registro.deportesFavoritos) {
+					nuevoUsuario.addDeportesFavoritos(em.find(Deporte.class, deporte));
+				}
 				em.persist(nuevoUsuario);
-			    //Asignamos el id del usuario de la BD a la sessión:
-			    req.getSession().setAttribute("simpleapp_auth_id", nuevoUsuario.getId());
 				return nuevoUsuario;
 			}
 		}
 		throw new EJBException("No se ha podido realizar el registro");
+
 	}
 
-  public Usuario getUser(long id) {
-    return em.find(Usuario.class, id);
-  }
-
-  
-  public RESTService.ID remove(Long userId) {
-	    Usuario u = getUser(userId);
-	    em.remove(u);
-	    return new RESTService.ID(userId);
-	  }
+	public Usuario getUser(long id) {
+		return em.find(Usuario.class, id);
+	}
 
 }

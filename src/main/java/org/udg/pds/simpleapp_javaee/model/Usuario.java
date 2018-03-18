@@ -1,7 +1,6 @@
 package org.udg.pds.simpleapp_javaee.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
@@ -14,14 +13,12 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "email", "username" }))
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonView(Views.Private.class)
 	protected Long id;
 
 	@NotNull
@@ -29,23 +26,18 @@ public class Usuario implements Serializable {
 	private String tokenFireBase;
 
 	@NotNull
-	@JsonView(Views.Public.class)
 	private String username;
 
 	@NotNull
-	@JsonView(Views.Public.class)
 	private String nombre;
 
 	@NotNull
-	@JsonView(Views.Public.class)
 	private String apellidos;
 
 	@NotNull
-	@JsonView(Views.Public.class)
 	private String telefono;
 
 	@NotNull
-	@JsonView(Views.Private.class)
 	private String email;
 
 	@NotNull
@@ -64,6 +56,10 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	private Ubicacion ubicacionGPS;
+
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.LAZY)
+	private Subscripcion subscripcion;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
@@ -215,6 +211,14 @@ public class Usuario implements Serializable {
 
 	public void setEventosRegistrado(List<Evento> eventosRegistrado) {
 		this.eventosRegistrado = eventosRegistrado;
+	}
+
+	public Subscripcion getSubscripcion() {
+		return subscripcion;
+	}
+
+	public void setSubscripcion(Subscripcion subscripcion) {
+		this.subscripcion = subscripcion;
 	}
 
 }

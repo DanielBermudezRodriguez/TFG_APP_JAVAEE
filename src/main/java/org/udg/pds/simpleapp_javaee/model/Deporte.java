@@ -29,6 +29,10 @@ public class Deporte implements Serializable {
 	@JsonIgnore
 	private List<Usuario> usuarios;
 
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "deportesSubscritos")
+	@JsonIgnore
+	private List<Subscripcion> subscripciones;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "deporte")
 	@JsonIgnore
 	private List<Evento> eventosCreados;
@@ -41,6 +45,7 @@ public class Deporte implements Serializable {
 		this.deporte = deporte;
 		this.usuarios = new ArrayList<>();
 		this.eventosCreados = new ArrayList<>();
+		this.subscripciones = new ArrayList<>();
 	}
 
 	public Long getId() {
@@ -79,6 +84,18 @@ public class Deporte implements Serializable {
 
 	public void addEventoDeportivo(Evento evento) {
 		this.eventosCreados.add(evento);
+	}
+
+	public List<Subscripcion> getSubscripciones() {
+		return subscripciones;
+	}
+
+	public void setSubscripciones(List<Subscripcion> subscripciones) {
+		this.subscripciones = subscripciones;
+	}
+
+	public void addSubscripciones(Subscripcion subscripcion) {
+		this.subscripciones.add(subscripcion);
 	}
 
 }

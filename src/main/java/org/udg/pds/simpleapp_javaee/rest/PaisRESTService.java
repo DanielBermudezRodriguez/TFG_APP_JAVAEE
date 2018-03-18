@@ -15,7 +15,7 @@ import org.udg.pds.simpleapp_javaee.util.ToJSON;
 
 @Path("/paises")
 @RequestScoped
-public class PaisRESTService extends RESTService {
+public class PaisRESTService extends GenericRESTService {
 	
     @EJB
     private PaisService paisService;
