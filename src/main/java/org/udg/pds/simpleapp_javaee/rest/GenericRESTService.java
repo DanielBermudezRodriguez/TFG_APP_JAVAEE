@@ -56,4 +56,12 @@ public class GenericRESTService {
 		}
 	}
 
+	public static class ResponseGenericId {
+		public Long id;
+
+		public ResponseGenericId(Long id) {
+			this.id = id;
+		}
+	}
+
 }
