@@ -28,7 +28,7 @@ public class Provincia implements Serializable {
 	private String provincia;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Pais pais;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "provincia")

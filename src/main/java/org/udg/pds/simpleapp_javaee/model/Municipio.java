@@ -32,6 +32,7 @@ public class Municipio implements Serializable {
 	private Provincia provincia;
 
 	@NotNull
+	@JsonIgnore
 	private String slug;
 
 	@NotNull

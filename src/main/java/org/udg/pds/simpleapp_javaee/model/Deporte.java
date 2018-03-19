@@ -87,6 +87,7 @@ public class Deporte implements Serializable {
 	}
 
 	public List<Subscripcion> getSubscripciones() {
+		subscripciones.size();
 		return subscripciones;
 	}
 

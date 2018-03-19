@@ -5,6 +5,8 @@ import org.udg.pds.simpleapp_javaee.service.UsuarioService;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
+import response.ResponseUsuario;
+
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +40,6 @@ public class UsuarioRESTService extends GenericRESTService {
 
 	}
 
-	@Path("registro")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response registro(@Context HttpServletRequest req, @Valid RequestRegistroUsuario registro) {
@@ -48,7 +49,7 @@ public class UsuarioRESTService extends GenericRESTService {
 			req.getSession().setAttribute(Global.AUTH_ID, u.getId());
 			return buildResponse(new ResponseGenericId(u.getId()));
 		}
-		throw new WebApplicationException("No se puede registrar un usuario logeado.");
+		throw new WebApplicationException("No se puede registrar un usuario logeado");
 
 	}
 
@@ -64,11 +65,24 @@ public class UsuarioRESTService extends GenericRESTService {
 				session.invalidate();
 				return buildResponse(new ResponseGenericId(idUsuario));
 			} else {
-				throw new WebApplicationException("No se puede cerrar sesión de otros usuarios.");
+				throw new WebApplicationException("No se puede cerrar sesión de otros usuarios");
 			}
 		}
-		throw new WebApplicationException("No se puede cerrar sesión si no está autenticado.");
+		throw new WebApplicationException("No se puede cerrar sesión si no está autenticado");
 
+	}
+
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerPerfilUsuario(@Context HttpServletRequest req, @PathParam("id") Long idUsuario) {
+
+		if (estaUsuarioLogeado(req)) {
+			Usuario usuario = usuarioService.obtenerPerfilUsuario(idUsuario);
+			return buildResponse(new ResponseUsuario.ResponseInformacionUsuario(usuario));
+
+		}
+		throw new WebApplicationException("No ha iniciado sesión");
 	}
 
 }

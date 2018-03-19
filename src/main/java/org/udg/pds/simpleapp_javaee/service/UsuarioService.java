@@ -7,9 +7,12 @@ import org.udg.pds.simpleapp_javaee.util.HashPassword;
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -71,6 +74,19 @@ public class UsuarioService {
 		}
 		throw new EJBException("No se ha podido realizar el registro");
 
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Usuario obtenerPerfilUsuario(Long idUsuario) {
+		EntityGraph graph = this.em.getEntityGraph("infoPerfilUsuario");
+		Map hints = new HashMap();
+		hints.put("javax.persistence.fetchgraph", graph);
+		Usuario usuario = em.find(Usuario.class, idUsuario, hints);
+		if (usuario != null) {
+			return usuario;
+		} else {
+			throw new EJBException("El usuario no existe");
+		}
 	}
 
 	public Usuario getUser(long id) {
