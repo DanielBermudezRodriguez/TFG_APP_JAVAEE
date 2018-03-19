@@ -76,12 +76,10 @@ public class UsuarioService {
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	// @SuppressWarnings({ "rawtypes", "unchecked" })
 	public Usuario obtenerPerfilUsuario(Long idUsuario) {
-		EntityGraph graph = this.em.getEntityGraph("infoPerfilUsuario");
-		Map hints = new HashMap();
-		hints.put("javax.persistence.fetchgraph", graph);
-		Usuario usuario = em.find(Usuario.class, idUsuario, hints);
+
+		Usuario usuario = em.find(Usuario.class, idUsuario);
 		if (usuario != null) {
 			return usuario;
 		} else {

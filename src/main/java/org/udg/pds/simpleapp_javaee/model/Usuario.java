@@ -12,10 +12,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@NamedEntityGraphs({ @NamedEntityGraph(name = "infoPerfilUsuario", attributeNodes = {
+/*EntityGraph graph = this.em.getEntityGraph("infoPerfilUsuario");
+Map hints = new HashMap();
+hints.put("javax.persistence.fetchgraph", graph);
+Usuario usuario = em.find(Usuario.class, idUsuario, hints);*/
+
+/*@NamedEntityGraphs({ @NamedEntityGraph(name = "infoPerfilUsuario", attributeNodes = {
 		@NamedAttributeNode(value = "municipio", subgraph = "provincias"),
 		@NamedAttributeNode(value = "deportesFavoritos") }, subgraphs = @NamedSubgraph(name = "provincias", attributeNodes = @NamedAttributeNode(value = "provincia", subgraph = "paises"))),
-		@NamedEntityGraph(name = "eventosRegistrado", attributeNodes = { @NamedAttributeNode("eventosRegistrado") }) })
+		@NamedEntityGraph(name = "eventosRegistrado", attributeNodes = { @NamedAttributeNode("eventosRegistrado") }) })*/
 @Entity
 public class Usuario implements Serializable {
 
@@ -54,7 +59,7 @@ public class Usuario implements Serializable {
 	private String password;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Municipio municipio;
 
 	@JsonIgnore
@@ -65,7 +70,7 @@ public class Usuario implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	private Subscripcion subscripcion;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private List<Deporte> deportesFavoritos;
 

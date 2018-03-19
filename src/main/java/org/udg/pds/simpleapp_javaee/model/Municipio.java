@@ -28,7 +28,7 @@ public class Municipio implements Serializable {
 	private String municipio;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Provincia provincia;
 
 	@NotNull
