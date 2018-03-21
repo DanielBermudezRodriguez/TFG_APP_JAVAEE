@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,15 +26,15 @@ public class Deporte implements Serializable {
 	@NotNull
 	private String deporte;
 
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "deportesFavoritos")
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "deportesFavoritos",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> usuarios;
 
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "deportesSubscritos")
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "deportesSubscritos",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Subscripcion> subscripciones;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "deporte")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "deporte",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventosCreados;
 
