@@ -41,11 +41,11 @@ public class Municipio implements Serializable {
 	@NotNull
 	private double longitudEstimada;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventos;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> usuarios;
 

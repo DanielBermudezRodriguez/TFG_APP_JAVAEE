@@ -74,11 +74,11 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	private List<Deporte> deportesFavoritos;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "administrador")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "administrador",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventosCreados;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventosRegistrado;
 

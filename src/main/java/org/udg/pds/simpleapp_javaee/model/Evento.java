@@ -67,7 +67,7 @@ public class Evento implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Municipio municipio;
 
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado")
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> participantes;
 

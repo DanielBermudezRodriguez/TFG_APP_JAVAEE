@@ -30,7 +30,7 @@ public class Ubicacion implements Serializable {
 	private String direccion;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Municipio municipio;
 
 	public Ubicacion() {

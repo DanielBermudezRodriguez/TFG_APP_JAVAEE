@@ -37,4 +37,20 @@ public class RequestUsuario {
 
 	}
 
+	public static class RequestModificarUsuario {
+		@NotNull
+		public String username;
+		@NotNull
+		public String nombre;
+		@NotNull
+		public String apellidos;
+		@NotNull
+		public String telefono;
+		@NotNull
+		public Long municipio;
+		@NotNull
+		public List<Long> deportesFavoritos;
+
+	}
+
 }

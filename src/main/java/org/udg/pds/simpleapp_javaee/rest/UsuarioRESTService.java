@@ -4,6 +4,7 @@ import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.service.UsuarioService;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import request.RequestUsuario.RequestLoginUsuario;
+import request.RequestUsuario.RequestModificarUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
 import response.ResponseUsuario;
 
@@ -83,6 +84,24 @@ public class UsuarioRESTService extends GenericRESTService {
 
 		}
 		throw new WebApplicationException("No ha iniciado sesión");
+	}
+
+	@PUT
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response modificarPerfilUsuario(@Context HttpServletRequest req, @PathParam("id") Long idUsuario, @Valid RequestModificarUsuario datosPerfil) {
+
+		if (estaUsuarioLogeado(req)) {
+			Long idSesion = obtenerUsuarioLogeado(req);
+			if (idSesion.equals(idUsuario)) {
+				Usuario u = usuarioService.modificarPerfil(datosPerfil,idUsuario);
+				return buildResponse(new ResponseGenericId(u.getId()));
+			}
+			else throw new WebApplicationException("No se puede modificar datos de otro usuario");
+
+		}
+		throw new WebApplicationException("No ha iniciado sesión");
+
 	}
 
 }

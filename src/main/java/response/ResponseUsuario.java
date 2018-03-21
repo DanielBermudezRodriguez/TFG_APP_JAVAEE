@@ -53,8 +53,8 @@ public class ResponseUsuario {
 			this.email = u.getEmail();
 			this.fechaRegistro = u.getFechaRegistro();
 			this.municipio = u.getMunicipio();
-			this.provincia = municipio.getProvincia();
-			this.pais = provincia.getPais();
+			this.provincia = u.getMunicipio().getProvincia();
+			this.pais = u.getMunicipio().getProvincia().getPais();
 			this.deportesFavoritos = u.getDeportesFavoritos();
 		}
 

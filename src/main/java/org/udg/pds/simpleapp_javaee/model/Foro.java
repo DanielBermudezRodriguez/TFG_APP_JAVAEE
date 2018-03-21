@@ -30,7 +30,7 @@ public class Foro implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	private Evento evento;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "foro")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "foro",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Mensaje> mensajes;
 

@@ -26,7 +26,7 @@ public class Subscripcion implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	private Usuario subscriptor;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Deporte> deportesSubscritos;
 
