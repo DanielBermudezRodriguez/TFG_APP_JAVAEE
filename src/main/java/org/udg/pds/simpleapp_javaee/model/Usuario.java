@@ -70,7 +70,7 @@ public class Usuario implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	private Subscripcion subscripcion;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Deporte> deportesFavoritos;
 
@@ -220,6 +220,10 @@ public class Usuario implements Serializable {
 
 	public void setEventosRegistrado(List<Evento> eventosRegistrado) {
 		this.eventosRegistrado = eventosRegistrado;
+	}
+	
+	public void addEventosRegistrado(Evento evento) {
+		this.eventosRegistrado.add(evento);
 	}
 
 	public Subscripcion getSubscripcion() {

@@ -66,6 +66,8 @@ public class UsuarioService {
 
 		Usuario usuario = em.find(Usuario.class, idUsuario);
 		if (usuario != null) {
+			// inicializar explicitamente colección deportes inicializada a lazy
+			usuario.getDeportesFavoritos().size();
 			return usuario;
 		} else {
 			throw new EJBException("El usuario no existe");

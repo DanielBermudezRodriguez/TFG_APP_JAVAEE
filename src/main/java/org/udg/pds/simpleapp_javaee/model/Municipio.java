@@ -10,12 +10,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@NamedQueries({
+		@NamedQuery(name = "@HQL_GET_MUNICIPIO_BYNAME", query = "select m from Municipio m where lower(m.municipio)=:municipio") })
 public class Municipio implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,11 +45,11 @@ public class Municipio implements Serializable {
 	@NotNull
 	private double longitudEstimada;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio",fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventos;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio",fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipio", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> usuarios;
 

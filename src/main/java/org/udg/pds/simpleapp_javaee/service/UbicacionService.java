@@ -22,7 +22,7 @@ public class UbicacionService {
 		
 		
 		
-		Query q = em.createQuery("select m from Municipio m where lower(m.municipio)=:municipio");
+		Query q = em.createNamedQuery("@HQL_GET_MUNICIPIO_BYNAME");
 		q.setParameter("municipio",datosUbicacion.municipio.toLowerCase());
 		Municipio municipio;
 		try {
@@ -33,8 +33,7 @@ public class UbicacionService {
 		
 		Usuario usuario  = em.find(Usuario.class, idUsuario);
 		if (usuario != null) {
-			Ubicacion ubicacion = new Ubicacion(datosUbicacion.latitud,datosUbicacion.longitud,datosUbicacion.direccion);
-			ubicacion.setMunicipio(municipio);
+			Ubicacion ubicacion = new Ubicacion(datosUbicacion.latitud,datosUbicacion.longitud,datosUbicacion.direccion,municipio);
 			usuario.setUbicacionGPS(ubicacion);
 			em.persist(ubicacion);
 			return ubicacion;

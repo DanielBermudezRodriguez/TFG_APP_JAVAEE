@@ -37,10 +37,11 @@ public class Ubicacion implements Serializable {
 
 	}
 
-	public Ubicacion(double latitud, double longitud, String direccion) {
+	public Ubicacion(double latitud, double longitud, String direccion, Municipio municipio) {
 		this.latitud = latitud;
 		this.longitud = longitud;
 		this.direccion = direccion;
+		this.municipio = municipio;
 
 	}
 
