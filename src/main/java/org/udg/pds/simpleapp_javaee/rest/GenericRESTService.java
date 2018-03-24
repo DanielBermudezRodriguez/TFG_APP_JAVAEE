@@ -63,5 +63,9 @@ public class GenericRESTService {
 			this.id = id;
 		}
 	}
+	
+	public static class RequestGenericId{
+		public Long id;
+	}
 
 }

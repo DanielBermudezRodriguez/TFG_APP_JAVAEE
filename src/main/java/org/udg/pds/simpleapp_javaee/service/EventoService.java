@@ -80,4 +80,22 @@ public class EventoService {
 
 	}
 
+	public Evento cancelarEvento(Long idUsuario, Long idEvento) {
+		Evento evento = em.find(Evento.class, idEvento);
+		if (evento != null) {
+			if (evento.getEstado().getId().equals(Global.EVENTO_FINALIZADO))
+				throw new EJBException("El evento ya ha finalizado");
+			else if (evento.getEstado().getId().equals(Global.EVENTO_SUSPENDIDO))
+				throw new EJBException("El evento ya ha sido suspendido");
+			else {
+				if (evento.getAdministrador().getId().equals(idUsuario)) {
+					evento.setEstado(em.find(Estado.class, Global.EVENTO_SUSPENDIDO));
+					return evento;
+				} else
+					throw new EJBException("No puede cancelar el evento");
+			}
+		} else
+			throw new EJBException("El evento no existe");
+	}
+
 }
