@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateDeserializer;
@@ -22,6 +24,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
+@NamedQueries({
+		@NamedQuery(name = "@HQL_GET_EVENTOS_NO_FINALIZADOS", query = "select e from Evento as e where (e.estado.id=:idEstado)") })
 public class Evento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -78,7 +82,8 @@ public class Evento implements Serializable {
 	public Evento() {
 	}
 
-	public Evento(String titulo, String descripcion, int duracion, int numeroParticipantes, Date fechaEvento, Estado estado) {
+	public Evento(String titulo, String descripcion, int duracion, int numeroParticipantes, Date fechaEvento,
+			Estado estado) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.duracion = duracion;

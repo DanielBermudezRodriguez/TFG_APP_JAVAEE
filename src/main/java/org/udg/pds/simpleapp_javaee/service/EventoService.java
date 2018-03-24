@@ -1,7 +1,10 @@
 package org.udg.pds.simpleapp_javaee.service;
 
+import java.util.List;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,6 +26,18 @@ public class EventoService {
 
 	@PersistenceContext
 	private EntityManager em;
+
+	@Schedule(second = "*/20", minute = "*", hour = "*", persistent = false)
+	public void doWork() {
+		Query q = em.createNamedQuery("@HQL_GET_EVENTOS_NO_FINALIZADOS");
+		q.setParameter("idEstado", Global.EVENTO_SUSPENDIDO);
+		try {
+			List<Evento> eventos = (List<Evento>) q.getResultList();
+			System.out.println("total: " + eventos.size());
+		} catch (Exception e) {
+			System.out.println("No hay resultado");
+		}
+	}
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 		// crear evento datos básicos
