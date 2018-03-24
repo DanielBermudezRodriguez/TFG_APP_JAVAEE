@@ -1,3 +1,16 @@
+INSERT INTO Estado VALUES (1, 'Abierto');
+INSERT INTO Estado VALUES (2, 'Completo');
+INSERT INTO Estado VALUES (3, 'Suspendido');
+INSERT INTO Estado VALUES (4, 'Finalizado');
+
+INSERT INTO Deporte (id, deporte) VALUES (1, 'Fútbol');
+INSERT INTO Deporte (id, deporte) VALUES (2, 'Ciclismo carretera');
+INSERT INTO Deporte (id, deporte) VALUES (3, 'Ciclismo montaña');
+INSERT INTO Deporte (id, deporte) VALUES (4, 'Baloncesto');
+INSERT INTO Deporte (id, deporte) VALUES (5, 'Tenis');
+INSERT INTO Deporte (id, deporte) VALUES (6, 'Otros');
+
+
 INSERT INTO Pais VALUES (1, 'España');
 
 INSERT INTO Provincia (id,provincia,pais_id) VALUES (1,  'Álava',  1);
@@ -8169,10 +8182,3 @@ INSERT INTO Municipio (provincia_id, municipio, id, slug, latitudEstimada, longi
 INSERT INTO Municipio (provincia_id, municipio, id, slug, latitudEstimada, longitudEstimada) VALUES(50, 'Zuera', 8114, 'zuera', 41.8691833, -0.7881644);
 INSERT INTO Municipio (provincia_id, municipio, id, slug, latitudEstimada, longitudEstimada) VALUES(51, 'Ceuta', 8115, 'ceuta', 35.8882871, -5.3161949);
 INSERT INTO Municipio (provincia_id, municipio, id, slug, latitudEstimada, longitudEstimada) VALUES(52, 'Melilla', 8116, 'melilla', 35.2923388, -2.9387938);
-
-INSERT INTO Deporte (id, deporte) VALUES (1, 'Fútbol');
-INSERT INTO Deporte (id, deporte) VALUES (2, 'Ciclismo carretera');
-INSERT INTO Deporte (id, deporte) VALUES (3, 'Ciclismo montaña');
-INSERT INTO Deporte (id, deporte) VALUES (4, 'Baloncesto');
-INSERT INTO Deporte (id, deporte) VALUES (5, 'Tenis');
-INSERT INTO Deporte (id, deporte) VALUES (6, 'Otros');

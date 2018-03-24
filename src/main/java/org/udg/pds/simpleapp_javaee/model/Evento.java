@@ -67,19 +67,24 @@ public class Evento implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Municipio municipio;
 
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado",fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> participantes;
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Estado estado;
 
 	public Evento() {
 	}
 
-	public Evento(String titulo, String descripcion, int duracion, int numeroParticipantes, Date fechaEvento) {
+	public Evento(String titulo, String descripcion, int duracion, int numeroParticipantes, Date fechaEvento, Estado estado) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.duracion = duracion;
 		this.numeroParticipantes = numeroParticipantes;
 		this.fechaEvento = fechaEvento;
+		this.estado = estado;
 
 		this.participantes = new ArrayList<>();
 	}
@@ -179,6 +184,14 @@ public class Evento implements Serializable {
 
 	public void setForo(Foro foro) {
 		this.foro = foro;
+	}
+
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
 	}
 
 }

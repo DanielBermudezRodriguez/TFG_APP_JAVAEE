@@ -7,11 +7,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.udg.pds.simpleapp_javaee.model.Deporte;
+import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Foro;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
+import org.udg.pds.simpleapp_javaee.util.Global;
+
 import request.RequestEvento.RequestCrearEvento;
 
 @Stateless
@@ -24,7 +27,7 @@ public class EventoService {
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 		// crear evento datos básicos
 		Evento evento = new Evento(datosEvento.titulo, datosEvento.descripcion, datosEvento.duracion,
-				datosEvento.numeroParticipantes, datosEvento.fechaEvento);
+				datosEvento.numeroParticipantes, datosEvento.fechaEvento, em.find(Estado.class, Global.EVENTO_ABIERTO));
 
 		// Evento creado por municipio seleccionada o ubicación GPS seleccionada
 		if (datosEvento.municipio != null) {

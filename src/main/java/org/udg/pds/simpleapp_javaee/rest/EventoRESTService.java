@@ -31,7 +31,7 @@ public class EventoRESTService extends GenericRESTService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response autenticacion(@Context HttpServletRequest req, @Valid RequestCrearEvento datosEvento) {
+	public Response crearEventoDeportivo(@Context HttpServletRequest req, @Valid RequestCrearEvento datosEvento) {
 
 		if (estaUsuarioLogeado(req)) {
 			Long idUsuario = obtenerUsuarioLogeado(req);
