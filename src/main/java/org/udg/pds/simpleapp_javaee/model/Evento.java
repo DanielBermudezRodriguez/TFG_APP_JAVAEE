@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @NamedQueries({
-		@NamedQuery(name = "@HQL_GET_EVENTOS_NO_FINALIZADOS", query = "select e from Evento as e where (e.estado.id=:idEstado)") })
+		@NamedQuery(name = "@HQL_GET_EVENTOS_NO_FINALIZADOS", query = "select e from Evento as e where e.fechaEvento <= :fechaActual  and e.estado.id <> :idCancelado") })
 public class Evento implements Serializable {
 
 	private static final long serialVersionUID = 1L;

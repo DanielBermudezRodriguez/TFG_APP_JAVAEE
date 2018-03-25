@@ -6,6 +6,7 @@ import org.udg.pds.simpleapp_javaee.util.ToJSON;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -65,6 +66,7 @@ public class GenericRESTService {
 	}
 	
 	public static class RequestGenericId{
+		@NotNull
 		public Long id;
 	}
 

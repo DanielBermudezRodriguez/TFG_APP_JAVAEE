@@ -25,6 +25,8 @@ public class RequestEvento {
 		@NotNull
 		public Long deporte;
 		public RequestUbicacionUsuario ubicacionGPS;
+		@NotNull
+		public String tituloForo;
 	}
 
 }

@@ -25,6 +25,9 @@ public class Foro implements Serializable {
 
 	@Column(nullable = false, columnDefinition = "BIT", length = 1)
 	private Boolean esPublico;
+	
+	@Column(length = 20, nullable = false)
+	private String titulo;
 
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
@@ -37,8 +40,9 @@ public class Foro implements Serializable {
 	public Foro() {
 	}
 
-	public Foro(Boolean esPublico) {
+	public Foro(Boolean esPublico, String titulo) {
 		this.esPublico = esPublico;
+		this.titulo = titulo;
 		this.mensajes = new ArrayList<>();
 	}
 
@@ -74,5 +78,15 @@ public class Foro implements Serializable {
 	public void addMensaje(Mensaje mensaje) {
 		this.mensajes.add(mensaje);
 	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+	
+	
 
 }

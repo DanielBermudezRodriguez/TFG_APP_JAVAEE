@@ -1,14 +1,16 @@
 package org.udg.pds.simpleapp_javaee.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
+
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
@@ -17,7 +19,6 @@ import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.Global;
-
 import request.RequestEvento.RequestCrearEvento;
 
 @Stateless
@@ -26,18 +27,6 @@ public class EventoService {
 
 	@PersistenceContext
 	private EntityManager em;
-
-	@Schedule(second = "*/20", minute = "*", hour = "*", persistent = false)
-	public void doWork() {
-		Query q = em.createNamedQuery("@HQL_GET_EVENTOS_NO_FINALIZADOS");
-		q.setParameter("idEstado", Global.EVENTO_SUSPENDIDO);
-		try {
-			List<Evento> eventos = (List<Evento>) q.getResultList();
-			System.out.println("total: " + eventos.size());
-		} catch (Exception e) {
-			System.out.println("No hay resultado");
-		}
-	}
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 		// crear evento datos básicos
@@ -69,7 +58,7 @@ public class EventoService {
 		}
 
 		// Inicializar el foro
-		Foro foro = new Foro(datosEvento.esPublico);
+		Foro foro = new Foro(datosEvento.esPublico,datosEvento.tituloForo);
 		evento.setForo(foro);
 		foro.setEvento(evento);
 		em.persist(foro);
@@ -111,6 +100,25 @@ public class EventoService {
 			}
 		} else
 			throw new EJBException("El evento no existe");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Evento> obtenerEventosNoFinalizados() {
+		List<Evento> eventos = new ArrayList<>();
+		Query q = em.createNamedQuery("@HQL_GET_EVENTOS_NO_FINALIZADOS");
+		q.setParameter("fechaActual", new Date(), TemporalType.DATE);
+		q.setParameter("idCancelado", Global.EVENTO_FINALIZADO);
+		try {
+			eventos = (List<Evento>) q.getResultList();
+			return eventos;
+		} catch (Exception e) {
+			return eventos;
+		}
+	}
+
+	public void finalizarEvento(Evento evento) {
+		evento.setEstado(em.find(Estado.class, Global.EVENTO_FINALIZADO));
+		em.persist(evento);
 	}
 
 }
