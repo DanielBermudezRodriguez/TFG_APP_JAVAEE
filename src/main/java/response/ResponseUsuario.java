@@ -46,4 +46,17 @@ public class ResponseUsuario {
 
 	}
 
+	public static class ResponseInformacionParticipante {
+		public Long id;
+		public String username;
+		public String municipio;
+
+		public ResponseInformacionParticipante(Usuario u) {
+			this.id = u.getId();
+			this.username = u.getUsername();
+			this.municipio = u.getMunicipio().getMunicipio();
+		}
+
+	}
+
 }

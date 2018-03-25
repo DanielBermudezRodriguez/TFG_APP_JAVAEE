@@ -1,5 +1,8 @@
 package org.udg.pds.simpleapp_javaee.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -76,6 +79,16 @@ public class ParticipanteService {
 				} else
 					throw new EJBException("El usuario no existe");
 			}
+		} else
+			throw new EJBException("El evento no existe");
+	}
+
+	public List<Usuario> obtenerParticipantesEvento(Long idEvento, Long obtenerUsuarioLogeado) {
+		Evento evento = em.find(Evento.class, idEvento);
+		if (evento != null) {
+			List<Usuario> participantes = new ArrayList<>();
+			participantes = evento.getParticipantes();
+			return participantes;
 		} else
 			throw new EJBException("El evento no existe");
 	}
