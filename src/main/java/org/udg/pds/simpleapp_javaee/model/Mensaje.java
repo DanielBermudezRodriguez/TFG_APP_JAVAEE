@@ -38,7 +38,7 @@ public class Mensaje implements Serializable {
 	private Foro foro;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Usuario usuario;
 
 	public Mensaje() {

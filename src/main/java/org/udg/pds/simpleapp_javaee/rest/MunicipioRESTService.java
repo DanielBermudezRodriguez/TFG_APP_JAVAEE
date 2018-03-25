@@ -18,24 +18,24 @@ import org.udg.pds.simpleapp_javaee.util.ToJSON;
 @Path("/municipio")
 @RequestScoped
 public class MunicipioRESTService extends GenericRESTService {
-	
-    @EJB
-    private MunicipioService municipioService;
 
-    @Inject
-    ToJSON toJson;
-    
-    @GET
-    @Path("{idProvincia}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerMunicipiosProvincia(@Context HttpServletRequest req,@PathParam("idProvincia") Long idProvincia) {
-    	if (estaUsuarioLogeado(req)) {
-    		return buildResponse(municipioService.obtenerMunicipiosProvincia(idProvincia));	
-    	}
-    	else {
-    		throw new WebApplicationException("No ha iniciado sesión.");
-    	}
-       
-    }
+	@EJB
+	private MunicipioService municipioService;
+
+	@Inject
+	ToJSON toJson;
+
+	@GET
+	@Path("{idProvincia}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerMunicipiosProvincia(@Context HttpServletRequest req,
+			@PathParam("idProvincia") Long idProvincia) {
+		if (estaUsuarioLogeado(req)) {
+			return buildResponse(municipioService.obtenerMunicipiosProvincia(idProvincia));
+		} else {
+			throw new WebApplicationException("No ha iniciado sesión.");
+		}
+
+	}
 
 }

@@ -16,6 +16,7 @@ public class ResponseUsuario {
 
 	public static class ResponseInformacionUsuario {
 
+		public Long id;
 		public String username;
 		public String nombre;
 		public String apellidos;
@@ -30,6 +31,7 @@ public class ResponseUsuario {
 		public List<Deporte> deportesFavoritos;
 
 		public ResponseInformacionUsuario(Usuario u) {
+			this.id = u.getId();
 			this.username = u.getUsername();
 			this.nombre = u.getNombre();
 			this.apellidos = u.getApellidos();

@@ -7,6 +7,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.service.EventoService;
 
@@ -17,15 +19,16 @@ public class ActualizarEstadoEvento {
 	@EJB
 	EventoService eventoService;
 
-	private static final Logger logger = Logger.getLogger(ActualizarEstadoEvento.class.getName());
+	@Inject
+	private Logger log;
 
 	@Schedule(second = "*/30", minute = "*", hour = "*", persistent = false)
 	public void doWork() {
 		List<Evento> eventos = eventoService.obtenerEventosNoFinalizados();
-		logger.log(Level.INFO, "Eventos recuperados: " + eventos.size());
+		log.log(Level.INFO, "Eventos recuperados: " + eventos.size());
 		for (Evento evento : eventos) {
 			eventoService.finalizarEvento(evento);
-			logger.log(Level.INFO, "El evento: " + evento.getTitulo() + " ha sido finalizado.");
+			log.log(Level.INFO, "El evento: " + evento.getTitulo() + " ha sido finalizado.");
 		}
 
 	}
