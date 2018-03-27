@@ -58,7 +58,7 @@ public class EventoService {
 		}
 
 		// Inicializar el foro
-		Foro foro = new Foro(datosEvento.esPublico,datosEvento.tituloForo);
+		Foro foro = new Foro(datosEvento.esPublico, datosEvento.tituloForo);
 		evento.setForo(foro);
 		foro.setEvento(evento);
 		em.persist(foro);
@@ -119,6 +119,34 @@ public class EventoService {
 	public void finalizarEvento(Evento evento) {
 		evento.setEstado(em.find(Estado.class, Global.EVENTO_FINALIZADO));
 		em.persist(evento);
+	}
+
+	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes) {
+		Query consulta;
+		String consultaString = "select e from Evento e where e.titulo like :titulo ";
+		
+		if (!deportes.isEmpty()) {
+			for (int i = 0 ; i < deportes.size(); i++) {
+				if (i == 0)consultaString += "and e.deporte.id = :deporte"+i+" ";
+				else {
+					consultaString += "or e.deporte.id = :deporte"+i+" ";
+				}
+			}
+		}
+
+		consulta = em.createQuery(consultaString);
+		consulta.setFirstResult(offset);// Posición del primer resultado
+		consulta.setMaxResults(limite);// Límite de resultados
+		consulta.setParameter("titulo", "%" + titulo +"%");
+		
+		if (!deportes.isEmpty()) {
+			for (int i = 0 ; i < deportes.size(); i++) {
+				consulta.setParameter("deporte"+i, deportes.get(i));
+			}
+		}
+		
+		List<Evento> eventos = consulta.getResultList();
+		return eventos;
 	}
 
 }
