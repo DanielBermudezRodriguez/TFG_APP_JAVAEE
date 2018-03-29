@@ -1,5 +1,6 @@
 package org.udg.pds.simpleapp_javaee.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -61,9 +62,11 @@ public class EventoRESTService extends GenericRESTService {
 			@DefaultValue("10") @QueryParam("limite") int limite, // cantidad de resultados a partir del offser indicado
 			@DefaultValue("0") @QueryParam("offset") int offset, // posición del primer evento en la lista obtenida
 			@DefaultValue("") @QueryParam("titulo") String titulo,
-			@QueryParam("deportes") final List<Long> deportes) {
+			@QueryParam("deportes") final List<Long> deportes,
+			@QueryParam("fechaEvento") Date fechaEvento,
+			@QueryParam("distancia") int distancia) {
 		if (estaUsuarioLogeado(req)) {
-			List<Evento> eventos = eventoService.buscadorEventos(obtenerUsuarioLogeado(req),limite,offset,titulo,deportes);
+			List<Evento> eventos = eventoService.buscadorEventos(obtenerUsuarioLogeado(req),limite,offset,titulo,deportes,fechaEvento,distancia);
 			return buildResponse(eventos.size());
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");

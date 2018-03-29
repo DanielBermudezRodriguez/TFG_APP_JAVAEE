@@ -1,11 +1,16 @@
 package org.udg.pds.simpleapp_javaee.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -27,6 +32,9 @@ public class EventoService {
 
 	@PersistenceContext
 	private EntityManager em;
+
+	@Inject
+	private Logger log;
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 		// crear evento datos básicos
@@ -121,30 +129,62 @@ public class EventoService {
 		em.persist(evento);
 	}
 
-	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes) {
+	@SuppressWarnings("unchecked")
+	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes,
+			Date fechaEvento, int distancia) {
 		Query consulta;
-		String consultaString = "select e from Evento e where e.titulo like :titulo ";
-		
-		if (!deportes.isEmpty()) {
-			for (int i = 0 ; i < deportes.size(); i++) {
-				if (i == 0)consultaString += "and e.deporte.id = :deporte"+i+" ";
-				else {
-					consultaString += "or e.deporte.id = :deporte"+i+" ";
-				}
-			}
+		String consultaString = "select e from Evento e where e.administrador.id <> :idUsuario ";
+		consultaString += "and e.estado.id <> :idCancelado and e.estado.id <> :idFinalizado ";
+
+		// Construcción consulta
+		if (titulo != null && !titulo.isEmpty()) {
+			consultaString += "and e.titulo like :titulo ";
 		}
 
+		if (deportes != null && !deportes.isEmpty()) {
+			for (int i = 0; i < deportes.size(); i++) {
+				if (i == 0)
+					consultaString += "and (e.deporte.id = :deporte" + i + " ";
+				else {
+					consultaString += "or e.deporte.id = :deporte" + i + " ";
+				}
+			}
+			consultaString += ") ";
+		}
+
+		if (fechaEvento != null) {
+			consultaString += "and year(e.fechaEvento) = :year and month(e.fechaEvento) = :month and day(e.fechaEvento) = :day ";
+		}
+
+		// Crear consulta
 		consulta = em.createQuery(consultaString);
 		consulta.setFirstResult(offset);// Posición del primer resultado
 		consulta.setMaxResults(limite);// Límite de resultados
-		consulta.setParameter("titulo", "%" + titulo +"%");
-		
-		if (!deportes.isEmpty()) {
-			for (int i = 0 ; i < deportes.size(); i++) {
-				consulta.setParameter("deporte"+i, deportes.get(i));
+		consulta.setParameter("idUsuario", idUsuario);
+		consulta.setParameter("idCancelado", Global.EVENTO_SUSPENDIDO);
+		consulta.setParameter("idFinalizado", Global.EVENTO_FINALIZADO);
+
+		// Parámetros consulta
+		if (titulo != null && !titulo.isEmpty()) {
+			consulta.setParameter("titulo", "%" + titulo + "%");
+		}
+
+		if (deportes != null && !deportes.isEmpty()) {
+			for (int i = 0; i < deportes.size(); i++) {
+				consulta.setParameter("deporte" + i, deportes.get(i));
 			}
 		}
-		
+
+		if (fechaEvento != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(fechaEvento);
+			consulta.setParameter("year", cal.get(Calendar.YEAR));
+			consulta.setParameter("month", cal.get(Calendar.MONTH) + 1);
+			consulta.setParameter("day", cal.get(Calendar.DAY_OF_MONTH));
+		}
+
+		log.log(Level.INFO, consultaString);
+
 		List<Evento> eventos = consulta.getResultList();
 		return eventos;
 	}
