@@ -2,7 +2,6 @@ package org.udg.pds.simpleapp_javaee.rest;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.Response;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.service.EventoService;
 import request.RequestEvento.RequestCrearEvento;
+import response.ResponseEvento;
 
 @Path("/evento")
 @RequestScoped
@@ -61,13 +61,14 @@ public class EventoRESTService extends GenericRESTService {
 	public Response buscadorEventos(@Context HttpServletRequest req,
 			@DefaultValue("10") @QueryParam("limite") int limite, // cantidad de resultados a partir del offser indicado
 			@DefaultValue("0") @QueryParam("offset") int offset, // posición del primer evento en la lista obtenida
-			@DefaultValue("") @QueryParam("titulo") String titulo,
-			@QueryParam("deportes") final List<Long> deportes,
-			@QueryParam("fechaEvento") Date fechaEvento,
-			@DefaultValue("-1") @QueryParam("distancia") Integer distancia) {
+			@DefaultValue("") @QueryParam("titulo") String titulo, @QueryParam("deportes") final List<Long> deportes,
+			@QueryParam("fechaEvento") Date fechaEvento, @DefaultValue("-1") @QueryParam("distancia") Integer distancia,
+			@DefaultValue("0") @QueryParam("municipio") Long municipio) {
 		if (estaUsuarioLogeado(req)) {
-			List<Evento> eventos = eventoService.buscadorEventos(obtenerUsuarioLogeado(req),limite,offset,titulo,deportes,fechaEvento,distancia);
-			return buildResponse(eventos.size());
+			List<ResponseEvento.ResponseEventoInformacion> eventos = eventoService.buscadorEventos(
+					obtenerUsuarioLogeado(req), limite, offset, titulo, deportes, fechaEvento, distancia, municipio);
+			return buildResponse(eventos);
+
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
 		}

@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -15,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
-
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
@@ -25,6 +23,7 @@ import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import request.RequestEvento.RequestCrearEvento;
+import response.ResponseEvento;
 
 @Stateless
 @LocalBean
@@ -130,12 +129,12 @@ public class EventoService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes,
-			Date fechaEvento, Integer distancia) {
+	public List<ResponseEvento.ResponseEventoInformacion> buscadorEventos(Long idUsuario, int limite, int offset,
+			String titulo, List<Long> deportes, Date fechaEvento, Integer distancia, Long municipio) {
 
 		Usuario usuario = em.find(Usuario.class, idUsuario);
 		Query consulta;
-		String consultaString = "select e from Evento e where e.administrador.id <> :idUsuario ";
+		String consultaString = "select e , e.participantes.size from Evento e where e.administrador.id <> :idUsuario ";
 		consultaString += "and e.estado.id <> :idCancelado and e.estado.id <> :idFinalizado ";
 
 		// Construcción consulta
@@ -165,7 +164,7 @@ public class EventoService {
 		// longitud estimadas de su municipio seleccionado al crear la cuenta.
 		double latitud = 0;
 		double longitud = 0;
-		if (distancia >= 0) {
+		if (distancia != null && distancia >= 0) {
 			if (distancia != 0) {
 				if (usuario.getUbicacionGPS() != null) {
 					latitud = usuario.getUbicacionGPS().getLatitud();
@@ -182,8 +181,8 @@ public class EventoService {
 			}
 		}
 		// Escojer eventos por municipio seleccionado
-		else {
-
+		else if (municipio != null && municipio != 0) {
+			consultaString += "and e.municipio.id = :municipio ";
 		}
 
 		// Crear consulta
@@ -220,10 +219,22 @@ public class EventoService {
 			consulta.setParameter("km", Global.KM_DISTANCIA);
 		}
 
+		if (municipio != null && municipio != 0) {
+			consulta.setParameter("municipio", municipio);
+		}
+
 		log.log(Level.INFO, consultaString);
 
-		List<Evento> eventos = consulta.getResultList();
-		return eventos;
+		List<Object> resultados = consulta.getResultList();
+
+		List<ResponseEvento.ResponseEventoInformacion> responseEventos = new ArrayList<>();
+		for (int i = 0; i < resultados.size(); i++) {
+			Object[] resultado = (Object[]) resultados.get(i);
+			responseEventos
+					.add(new ResponseEvento.ResponseEventoInformacion((Evento) resultado[0], (Integer) resultado[1]));
+		}
+
+		return responseEventos;
 	}
 
 }

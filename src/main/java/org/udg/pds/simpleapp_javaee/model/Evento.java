@@ -56,19 +56,19 @@ public class Evento implements Serializable {
 	private Foro foro;
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	private Ubicacion ubicacionGPS;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Deporte deporte;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Usuario administrador;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Municipio municipio;
 
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado", fetch = FetchType.LAZY)
