@@ -64,7 +64,7 @@ public class EventoRESTService extends GenericRESTService {
 			@DefaultValue("") @QueryParam("titulo") String titulo,
 			@QueryParam("deportes") final List<Long> deportes,
 			@QueryParam("fechaEvento") Date fechaEvento,
-			@QueryParam("distancia") int distancia) {
+			@DefaultValue("-1") @QueryParam("distancia") Integer distancia) {
 		if (estaUsuarioLogeado(req)) {
 			List<Evento> eventos = eventoService.buscadorEventos(obtenerUsuarioLogeado(req),limite,offset,titulo,deportes,fechaEvento,distancia);
 			return buildResponse(eventos.size());

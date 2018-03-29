@@ -131,7 +131,8 @@ public class EventoService {
 
 	@SuppressWarnings("unchecked")
 	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes,
-			Date fechaEvento, int distancia) {
+			Date fechaEvento, Integer distancia) {
+		Usuario usuario = em.find(Usuario.class, idUsuario);
 		Query consulta;
 		String consultaString = "select e from Evento e where e.administrador.id <> :idUsuario ";
 		consultaString += "and e.estado.id <> :idCancelado and e.estado.id <> :idFinalizado ";
@@ -154,6 +155,34 @@ public class EventoService {
 
 		if (fechaEvento != null) {
 			consultaString += "and year(e.fechaEvento) = :year and month(e.fechaEvento) = :month and day(e.fechaEvento) = :day ";
+		}
+
+		// Si se escoje en el buscador una distancia máxima a buscar en función de la
+		// ubicación GPS actual del usuario:
+		// 1. Se coje la latitud y longitud últimas registradas del usuario actual.
+		// 2. En caso de no tener ubicación GPS registrada, se escoje la latitud y
+		// longitud estimadas de su municipio seleccionado al crear la cuenta.
+		double latitud = 0;
+		double longitud = 0;
+		if (distancia >= 0) {
+			if (distancia != 0) {
+				if (usuario.getUbicacionGPS() != null) {
+					latitud = usuario.getUbicacionGPS().getLatitud();
+					longitud = usuario.getUbicacionGPS().getLongitud();
+				} else {
+					if (usuario.getMunicipio() != null) {
+						latitud = usuario.getMunicipio().getLatitudEstimada();
+						longitud = usuario.getMunicipio().getLongitudEstimada();
+					}
+				}
+				consultaString += "and ((e.ubicacionGPS is not null and " + Global.FORMULA_DISTANCIA_GPS
+						+ " <= :distancia) or (e.ubicacionGPS is null and " + Global.FORMULA_DISTANCIA_GPS_ESTIMADA
+						+ " <= :distancia )) ";
+			}
+		}
+		// Escojer eventos por municipio seleccionado
+		else {
+
 		}
 
 		// Crear consulta
@@ -181,6 +210,12 @@ public class EventoService {
 			consulta.setParameter("year", cal.get(Calendar.YEAR));
 			consulta.setParameter("month", cal.get(Calendar.MONTH) + 1);
 			consulta.setParameter("day", cal.get(Calendar.DAY_OF_MONTH));
+		}
+
+		if (distancia > 0) {
+			consulta.setParameter("latitud", latitud);
+			consulta.setParameter("longitud", longitud);
+			consulta.setParameter("distancia", distancia.doubleValue());
 		}
 
 		log.log(Level.INFO, consultaString);
