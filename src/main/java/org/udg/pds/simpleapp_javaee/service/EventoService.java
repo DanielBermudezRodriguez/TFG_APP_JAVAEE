@@ -132,6 +132,7 @@ public class EventoService {
 	@SuppressWarnings("unchecked")
 	public List<Evento> buscadorEventos(Long idUsuario, int limite, int offset, String titulo, List<Long> deportes,
 			Date fechaEvento, Integer distancia) {
+
 		Usuario usuario = em.find(Usuario.class, idUsuario);
 		Query consulta;
 		String consultaString = "select e from Evento e where e.administrador.id <> :idUsuario ";
@@ -216,6 +217,7 @@ public class EventoService {
 			consulta.setParameter("latitud", latitud);
 			consulta.setParameter("longitud", longitud);
 			consulta.setParameter("distancia", distancia.doubleValue());
+			consulta.setParameter("km", Global.KM_DISTANCIA);
 		}
 
 		log.log(Level.INFO, consultaString);
