@@ -3,10 +3,16 @@ package org.udg.pds.simpleapp_javaee.service;
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
+import org.udg.pds.simpleapp_javaee.util.FireBaseCloudMessaging;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
+
+import com.google.firebase.FirebaseApp;
+
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestModificarUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +31,13 @@ public class UsuarioService {
 	private EntityManager em;
 
 	public Usuario verificarPassword(RequestLoginUsuario login) {
+
+		try {
+			FirebaseApp fireBase = FireBaseCloudMessaging.getInstance().getFireBaseApp();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		Usuario usuario = existeUsuarioConMail(login.email);
 		if (usuario != null) {
