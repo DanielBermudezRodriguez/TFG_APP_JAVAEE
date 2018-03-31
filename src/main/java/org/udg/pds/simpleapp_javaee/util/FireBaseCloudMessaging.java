@@ -1,7 +1,9 @@
 package org.udg.pds.simpleapp_javaee.util;
 
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.inject.Inject;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -12,20 +14,28 @@ public class FireBaseCloudMessaging {
 
 	private static FireBaseCloudMessaging fireBase = null;
 
-	public FireBaseCloudMessaging() throws IOException {
+	@Inject
+	private Logger log;
 
-		FileInputStream serviceAccount = new FileInputStream(
-				"\\TODOjavaee\\src\\main\\java\\org\\udg\\pds\\simpleapp_javaee\\util\\serviceAccountKey.json");
+	public FireBaseCloudMessaging() {
+		try {
 
-		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-				.setDatabaseUrl("https://tfg-geinf.firebaseio.com").build();
+			FileInputStream serviceAccount = new FileInputStream(
+					"C:\\Users\\Dani\\TFG\\ServerJEE\\src\\main\\resources\\serviceAccountKey.json");
 
-		fireBaseApp = FirebaseApp.initializeApp(options);
+			FirebaseOptions options = new FirebaseOptions.Builder()
+					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					.setDatabaseUrl(Global.DATABASE_URL_FIREBASE).build();
+
+			fireBaseApp = FirebaseApp.initializeApp(options);
+
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "Error al intentar abrir el fichero: " + e.getMessage());
+		}
 
 	}
 
-	public static FireBaseCloudMessaging getInstance() throws IOException {
+	public static FireBaseCloudMessaging getInstance() {
 		if (fireBase == null) {
 			fireBase = new FireBaseCloudMessaging();
 		}

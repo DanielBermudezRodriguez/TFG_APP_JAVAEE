@@ -3,22 +3,20 @@ package org.udg.pds.simpleapp_javaee.service;
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
-import org.udg.pds.simpleapp_javaee.util.FireBaseCloudMessaging;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
-
-import com.google.firebase.FirebaseApp;
-
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestModificarUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -30,18 +28,15 @@ public class UsuarioService {
 	@PersistenceContext
 	private EntityManager em;
 
-	public Usuario verificarPassword(RequestLoginUsuario login) {
+	@Inject
+	private Logger log;
 
-		try {
-			FirebaseApp fireBase = FireBaseCloudMessaging.getInstance().getFireBaseApp();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public Usuario verificarPassword(RequestLoginUsuario login) {
 
 		Usuario usuario = existeUsuarioConMail(login.email);
 		if (usuario != null) {
 			if (HashPassword.validarPassword(login.password, login.email, usuario.getPassword())) {
+				log.log(Level.INFO, "Token en el login: " + login.tokenFireBase);
 				usuario.setTokenFireBase(login.tokenFireBase);
 				return usuario;
 			} else
@@ -61,6 +56,7 @@ public class UsuarioService {
 			if (usuario != null)
 				throw new EJBException("Ya existe un usuario con el Nick " + registro.username);
 			else {
+				log.log(Level.INFO, "Token en el registro: " + registro.tokenFireBase);
 				Usuario nuevoUsuario = new Usuario(registro.username, registro.email,
 						HashPassword.passwordHash(registro.password, registro.email), registro.nombre,
 						registro.apellidos, registro.telefono, registro.tokenFireBase, new Date());
