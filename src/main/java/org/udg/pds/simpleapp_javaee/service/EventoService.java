@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +23,8 @@ import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.Global;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.EventoCancelado;
+
 import request.RequestEvento.RequestCrearEvento;
 import response.ResponseEvento;
 
@@ -34,6 +37,10 @@ public class EventoService {
 
 	@Inject
 	private Logger log;
+
+	@Inject
+	@EventoCancelado
+	private Event<Evento> eventoCancelado;
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 		// crear evento datos básicos
@@ -101,6 +108,7 @@ public class EventoService {
 			else {
 				if (evento.getAdministrador().getId().equals(idUsuario)) {
 					evento.setEstado(em.find(Estado.class, Global.EVENTO_SUSPENDIDO));
+					eventoCancelado.fire(evento);
 					return evento;
 				} else
 					throw new EJBException("No puede cancelar el evento");
