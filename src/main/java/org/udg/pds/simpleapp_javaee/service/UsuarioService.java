@@ -29,7 +29,7 @@ public class UsuarioService {
 	private EntityManager em;
 
 	@Inject
-	private Logger log;
+	private Logger log; 
 
 	public Usuario verificarPassword(RequestLoginUsuario login) {
 
@@ -70,7 +70,6 @@ public class UsuarioService {
 
 	}
 
-	// @SuppressWarnings({ "rawtypes", "unchecked" })
 	public Usuario obtenerPerfilUsuario(Long idUsuario) {
 
 		Usuario usuario = em.find(Usuario.class, idUsuario);
