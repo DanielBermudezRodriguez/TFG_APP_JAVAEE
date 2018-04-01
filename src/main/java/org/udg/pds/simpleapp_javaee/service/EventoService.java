@@ -108,6 +108,7 @@ public class EventoService {
 			else {
 				if (evento.getAdministrador().getId().equals(idUsuario)) {
 					evento.setEstado(em.find(Estado.class, Global.EVENTO_SUSPENDIDO));
+					evento.getParticipantes().size();
 					eventoCancelado.fire(evento);
 					return evento;
 				} else

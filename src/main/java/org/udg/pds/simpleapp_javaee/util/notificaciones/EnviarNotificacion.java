@@ -5,16 +5,14 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Stateless
+@LocalBean
 public class EnviarNotificacion {
-
-	@Inject
-	private static Logger log;
 
 	public static void enviarNotificacion(Notificacion notificacion) {
 
@@ -39,8 +37,8 @@ public class EnviarNotificacion {
 
 			// Procesar respuesta
 			int responseCode = conn.getResponseCode();
-			log.log(Level.INFO, "Enviando petición POST a la URL: " + url);
-			log.log(Level.INFO, "Código de respuesta: " + responseCode);
+			System.out.println("Enviando petición POST a la URL: " + url.toString());
+			System.out.println("Código de respuesta: " + responseCode);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
@@ -50,11 +48,10 @@ public class EnviarNotificacion {
 				response.append(inputLine);
 			}
 			in.close();
-
-			log.log(Level.INFO, "Contenido respuesta: " + response.toString());
+			System.out.println("Contenido respuesta: " + response.toString());
 
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "ERROR al enviar la notificación");
+			System.out.println("ERROR al enviar la notificación");
 		}
 
 	}

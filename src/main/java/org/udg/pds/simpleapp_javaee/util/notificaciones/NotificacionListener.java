@@ -12,7 +12,7 @@ public class NotificacionListener {
 
 	protected List<Usuario> destinatarios = new ArrayList<>();
 
-	protected void enviarNotificacio() {
+	protected void enviarNotificacion() {
 		Notificacion notificacion = new Notificacion();
 
 		for (Usuario u : destinatarios) {

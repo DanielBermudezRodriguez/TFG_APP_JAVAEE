@@ -17,6 +17,7 @@ public class EventoListener extends NotificacionListener {
 		destinatarios.addAll(e.getParticipantes());
 		contenidoNotificacion.put("title", e.getTitulo());
 		contenidoNotificacion.put("message", "Cancelado!");
+		enviarNotificacion();
 	}
 
 }
