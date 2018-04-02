@@ -59,6 +59,10 @@ public class Usuario implements Serializable {
 	private String password;
 
 	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	private Imagen imagen;
+
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Municipio municipio;
 
@@ -74,11 +78,11 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	private List<Deporte> deportesFavoritos;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "administrador",fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "administrador", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventosCreados;
 
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Evento> eventosRegistrado;
 
@@ -221,7 +225,7 @@ public class Usuario implements Serializable {
 	public void setEventosRegistrado(List<Evento> eventosRegistrado) {
 		this.eventosRegistrado = eventosRegistrado;
 	}
-	
+
 	public void addEventosRegistrado(Evento evento) {
 		this.eventosRegistrado.add(evento);
 	}
@@ -232,6 +236,14 @@ public class Usuario implements Serializable {
 
 	public void setSubscripcion(Subscripcion subscripcion) {
 		this.subscripcion = subscripcion;
+	}
+
+	public Imagen getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(Imagen imagen) {
+		this.imagen = imagen;
 	}
 
 }
