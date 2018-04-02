@@ -27,6 +27,7 @@ import org.udg.pds.simpleapp_javaee.util.notificaciones.EventoCancelado;
 
 import request.RequestEvento.RequestCrearEvento;
 import response.ResponseEvento;
+import response.ResponseEvento.ResponseEventoInformacion;
 
 @Stateless
 @LocalBean
@@ -244,6 +245,15 @@ public class EventoService {
 		}
 
 		return responseEventos;
+	}
+
+	public ResponseEventoInformacion obtenerEvento(Long idEvento) {
+		Evento e = em.find(Evento.class, idEvento);
+		if (e != null) {
+			return new ResponseEvento.ResponseEventoInformacion(e, e.getParticipantes().size());
+		} else
+			throw new EJBException("El evento solicitado no existe");
+
 	}
 
 }

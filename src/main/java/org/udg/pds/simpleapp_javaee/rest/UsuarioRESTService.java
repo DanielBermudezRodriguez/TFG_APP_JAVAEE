@@ -6,7 +6,10 @@ import org.udg.pds.simpleapp_javaee.util.Global;
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestModificarUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
+import response.ResponseEvento;
 import response.ResponseUsuario;
+
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -89,19 +92,35 @@ public class UsuarioRESTService extends GenericRESTService {
 	@PUT
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response modificarPerfilUsuario(@Context HttpServletRequest req, @PathParam("id") Long idUsuario, @Valid RequestModificarUsuario datosPerfil) {
+	public Response modificarPerfilUsuario(@Context HttpServletRequest req, @PathParam("id") Long idUsuario,
+			@Valid RequestModificarUsuario datosPerfil) {
 
 		if (estaUsuarioLogeado(req)) {
 			Long idSesion = obtenerUsuarioLogeado(req);
 			if (idSesion.equals(idUsuario)) {
-				Usuario u = usuarioService.modificarPerfil(datosPerfil,idUsuario);
+				Usuario u = usuarioService.modificarPerfil(datosPerfil, idUsuario);
 				return buildResponse(new ResponseGenericId(u.getId()));
-			}
-			else throw new WebApplicationException("No se puede modificar datos de otro usuario");
+			} else
+				throw new WebApplicationException("No se puede modificar datos de otro usuario");
 
 		}
 		throw new WebApplicationException("No ha iniciado sesión");
 
+	}
+
+	// tipo = 0 ; Eventos creados y administrados por el usuario.
+	// tipo = 1 ; Eventos en los que está apuntado el usuario.
+	@GET
+	@Path("evento/{tipo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerEventosUsuario(@Context HttpServletRequest req, @PathParam("tipo") Long tipo) {
+
+		if (estaUsuarioLogeado(req)) {
+			List<ResponseEvento.ResponseEventoInformacion> eventos = usuarioService
+					.obtenerEventosUsuario(obtenerUsuarioLogeado(req), tipo);
+			return buildResponse(eventos);
+		}
+		throw new WebApplicationException("No ha iniciado sesión");
 	}
 
 }

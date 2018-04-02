@@ -12,6 +12,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -72,6 +73,19 @@ public class EventoRESTService extends GenericRESTService {
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
 		}
+	}
+
+	@GET
+	@Path("{idEvento}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento) {
+
+		if (estaUsuarioLogeado(req)) {
+			ResponseEvento.ResponseEventoInformacion evento = eventoService.obtenerEvento(idEvento);
+			return buildResponse(evento);
+		}
+		throw new WebApplicationException("No ha iniciado sesión");
+
 	}
 
 }

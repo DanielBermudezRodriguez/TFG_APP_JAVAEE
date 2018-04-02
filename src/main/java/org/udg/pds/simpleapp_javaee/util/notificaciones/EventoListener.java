@@ -6,6 +6,7 @@ import javax.ejb.LockType;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import org.udg.pds.simpleapp_javaee.model.Evento;
+import org.udg.pds.simpleapp_javaee.util.Global;
 
 public class EventoListener extends NotificacionListener {
 
@@ -17,6 +18,7 @@ public class EventoListener extends NotificacionListener {
 		destinatarios.addAll(e.getParticipantes());
 		contenidoNotificacion.put("title", e.getTitulo());
 		contenidoNotificacion.put("message", "Cancelado!");
+		contenidoNotificacion.put("notificationType",Global.NOTIFICACION_EVENTO_CANCELADO);
 		enviarNotificacion();
 	}
 

@@ -1,12 +1,16 @@
 package org.udg.pds.simpleapp_javaee.service;
 
 import org.udg.pds.simpleapp_javaee.model.Deporte;
+import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestModificarUsuario;
 import request.RequestUsuario.RequestRegistroUsuario;
+import response.ResponseEvento;
+import response.ResponseEvento.ResponseEventoInformacion;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +33,7 @@ public class UsuarioService {
 	private EntityManager em;
 
 	@Inject
-	private Logger log; 
+	private Logger log;
 
 	public Usuario verificarPassword(RequestLoginUsuario login) {
 
@@ -163,6 +167,29 @@ public class UsuarioService {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<ResponseEventoInformacion> obtenerEventosUsuario(Long idUsuario, Long tipo) {
+		Usuario u = em.find(Usuario.class, idUsuario);
+		if (u != null) {
+			List<Evento> eventos = new ArrayList<>();
+			// Eventos administrados
+			if (tipo.equals(0L)) {
+				eventos = u.getEventosCreados();
+			} // Eventos apuntado
+			else if (tipo.equals(1L)) {
+				eventos = u.getEventosRegistrado();
+			} else
+				throw new EJBException(
+						"El tipo no es válido. Introduzca (0) para recuperar sus eventos creados o (1) para recuperar los eventos en que está inscrito");
+			List<ResponseEvento.ResponseEventoInformacion> responseEventos = new ArrayList<>();
+			for (Evento e : eventos) {
+				if (!(tipo.equals(1L) && e.getAdministrador().getId().equals(idUsuario)))
+					responseEventos.add(new ResponseEvento.ResponseEventoInformacion(e, e.getParticipantes().size()));
+			}
+			return responseEventos;
+		} else
+			throw new EJBException("No existe el usuario");
 	}
 
 }
