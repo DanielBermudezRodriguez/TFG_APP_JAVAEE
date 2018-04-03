@@ -38,7 +38,7 @@ public class ImagenRESTService extends GenericRESTService {
 	public Response subirImagenUsuario(@Context HttpServletRequest req, MultipartFormDataInput input) {
 		if (estaUsuarioLogeado(req)) {
 			List<String> imagenSubida = subirImagen(input, obtenerUsuarioLogeado(req));
-			Imagen imagen = usuarioService.guardarImagenPerfil(obtenerUsuarioLogeado(req), imagenSubida,BASE_DIR);
+			Imagen imagen = usuarioService.guardarImagenPerfil(obtenerUsuarioLogeado(req), imagenSubida, BASE_DIR);
 			return buildResponse(imagen);
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
@@ -55,6 +55,18 @@ public class ImagenRESTService extends GenericRESTService {
 			ResponseBuilder response = Response.ok((Object) file);
 			response.header("Content-Disposition", "attachment; filename=" + nombreImagen);
 			return response.build();
+		} else {
+			throw new WebApplicationException("No ha iniciado sesión");
+		}
+	}
+
+	@DELETE
+	@Path("/usuario")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response eliminarImagenPerfil(@Context HttpServletRequest req) {
+		if (estaUsuarioLogeado(req)) {
+			Imagen imagen = usuarioService.eliminarImagenPerfil(obtenerUsuarioLogeado(req),BASE_DIR);
+			return buildResponse(imagen);
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
 		}

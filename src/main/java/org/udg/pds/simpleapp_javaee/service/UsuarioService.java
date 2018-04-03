@@ -204,15 +204,7 @@ public class UsuarioService {
 		if (u != null) {
 			if (imagenSubida != null && !imagenSubida.isEmpty()) {
 				Imagen imagen = u.getImagen();
-
-				if (!imagen.getRuta().equals(Global.NO_IMAGEN_PERFIL)) {
-					File file = new File(baseDir.toString() + "\\" + imagen.getRuta());
-					if (file.delete())
-						log.log(Level.INFO, "Imagen eliminada correctament");
-					else
-						log.log(Level.INFO, "No se pudo eliminar la imagen");
-				}
-
+				eliminarImagenPerfil(imagen, baseDir);
 				imagen.setRuta(imagenSubida.get(0));
 				return imagen;
 			} else
@@ -221,10 +213,32 @@ public class UsuarioService {
 			throw new EJBException("El usuario no existe");
 	}
 
+	private void eliminarImagenPerfil(Imagen imagen, Path baseDir) {
+		if (!imagen.getRuta().equals(Global.NO_IMAGEN_PERFIL)) {
+			File file = new File(baseDir.toString() + "\\" + imagen.getRuta());
+			if (file.delete())
+				log.log(Level.INFO, "Imagen eliminada correctamente");
+			else
+				log.log(Level.INFO, "No se pudo eliminar la imagen");
+		}
+	}
+
 	public String obtenerImagen(Long idUsuario) {
 		Usuario u = em.find(Usuario.class, idUsuario);
 		if (u != null) {
 			return u.getImagen().getRuta();
+		} else
+			throw new EJBException("El usuario no existe");
+	}
+
+	public Imagen eliminarImagenPerfil(Long idUsuario, Path baseDir) {
+		Usuario u = em.find(Usuario.class, idUsuario);
+		if (u != null) {
+			Imagen imagen = u.getImagen();
+			eliminarImagenPerfil(imagen, baseDir);
+			imagen.setRuta(Global.NO_IMAGEN_PERFIL);
+			return imagen;
+
 		} else
 			throw new EJBException("El usuario no existe");
 	}
