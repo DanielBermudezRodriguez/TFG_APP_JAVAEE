@@ -2,8 +2,10 @@ package org.udg.pds.simpleapp_javaee.service;
 
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Evento;
+import org.udg.pds.simpleapp_javaee.model.Imagen;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
+import org.udg.pds.simpleapp_javaee.util.Global;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
 import request.RequestUsuario.RequestLoginUsuario;
 import request.RequestUsuario.RequestModificarUsuario;
@@ -11,6 +13,8 @@ import request.RequestUsuario.RequestRegistroUsuario;
 import response.ResponseEvento;
 import response.ResponseEvento.ResponseEventoInformacion;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +70,9 @@ public class UsuarioService {
 						registro.apellidos, registro.telefono, registro.tokenFireBase, new Date());
 				nuevoUsuario.setMunicipio(obtenerMunicipio(registro.municipio));
 				nuevoUsuario.setDeportesFavoritos(obtenerDeportesFavoritos(registro.deportesFavoritos));
+				Imagen imagenPorDefecto = new Imagen(Global.NO_IMAGEN_PERFIL);
+				em.persist(imagenPorDefecto);
+				nuevoUsuario.setImagen(imagenPorDefecto);
 				em.persist(nuevoUsuario);
 				return nuevoUsuario;
 			}
@@ -192,4 +199,33 @@ public class UsuarioService {
 			throw new EJBException("No existe el usuario");
 	}
 
+	public Imagen guardarImagenPerfil(Long idUsuario, List<String> imagenSubida, Path baseDir) {
+		Usuario u = em.find(Usuario.class, idUsuario);
+		if (u != null) {
+			if (imagenSubida != null && !imagenSubida.isEmpty()) {
+				Imagen imagen = u.getImagen();
+
+				if (!imagen.getRuta().equals(Global.NO_IMAGEN_PERFIL)) {
+					File file = new File(baseDir.toString() + "\\" + imagen.getRuta());
+					if (file.delete())
+						log.log(Level.INFO, "Imagen eliminada correctament");
+					else
+						log.log(Level.INFO, "No se pudo eliminar la imagen");
+				}
+
+				imagen.setRuta(imagenSubida.get(0));
+				return imagen;
+			} else
+				throw new EJBException("No se puede subir la imagen");
+		} else
+			throw new EJBException("El usuario no existe");
+	}
+
+	public String obtenerImagen(Long idUsuario) {
+		Usuario u = em.find(Usuario.class, idUsuario);
+		if (u != null) {
+			return u.getImagen().getRuta();
+		} else
+			throw new EJBException("El usuario no existe");
+	}
 }
