@@ -8,7 +8,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,13 +28,7 @@ public class ProvinciaRESTService extends GenericRESTService {
 	@Path("{idPais}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response obtenerProvinciasPais(@Context HttpServletRequest req, @PathParam("idPais") Long idPais) {
-
-		if (estaUsuarioLogeado(req)) {
-			return buildResponse(provinciaService.obtenerProvinciasPais(idPais));
-		} else {
-			throw new WebApplicationException("No ha iniciado sesión.");
-		}
-
+		return buildResponse(provinciaService.obtenerProvinciasPais(idPais));
 	}
 
 }
