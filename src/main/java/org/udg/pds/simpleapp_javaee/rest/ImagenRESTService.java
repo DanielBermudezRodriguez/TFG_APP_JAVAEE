@@ -49,15 +49,11 @@ public class ImagenRESTService extends GenericRESTService {
 	@Path("/usuario/{idUsuario}")
 	@Produces({ "image/png", "image/jpg" })
 	public Response obtenerImagen(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario) {
-		if (estaUsuarioLogeado(req)) {
-			String nombreImagen = usuarioService.obtenerImagen(idUsuario);
-			File file = new File(BASE_DIR.toString() + "\\" + nombreImagen);
-			ResponseBuilder response = Response.ok((Object) file);
-			response.header("Content-Disposition", "attachment; filename=" + nombreImagen);
-			return response.build();
-		} else {
-			throw new WebApplicationException("No ha iniciado sesión");
-		}
+		String nombreImagen = usuarioService.obtenerImagen(idUsuario);
+		File file = new File(BASE_DIR.toString() + "\\" + nombreImagen);
+		ResponseBuilder response = Response.ok((Object) file);
+		response.header("Content-Disposition", "attachment; filename=" + nombreImagen);
+		return response.build();
 	}
 
 	@DELETE
@@ -65,7 +61,7 @@ public class ImagenRESTService extends GenericRESTService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response eliminarImagenPerfil(@Context HttpServletRequest req) {
 		if (estaUsuarioLogeado(req)) {
-			Imagen imagen = usuarioService.eliminarImagenPerfil(obtenerUsuarioLogeado(req),BASE_DIR);
+			Imagen imagen = usuarioService.eliminarImagenPerfil(obtenerUsuarioLogeado(req), BASE_DIR);
 			return buildResponse(imagen);
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
@@ -96,7 +92,7 @@ public class ImagenRESTService extends GenericRESTService {
 		String extension = obtenerExtension(headers);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
-		return "id" + idUsuario.toString() + "usuario" + calendar.getTimeInMillis() + "." + extension;
+		return "id" + idUsuario + "usuario" + calendar.getTimeInMillis() + "." + extension;
 	}
 
 	private void saveFile(InputStream uploadedInputStream, String serverLocation) throws IOException {
