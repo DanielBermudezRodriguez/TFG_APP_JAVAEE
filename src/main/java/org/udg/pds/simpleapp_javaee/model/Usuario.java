@@ -44,9 +44,6 @@ public class Usuario implements Serializable {
 	private String apellidos;
 
 	@NotNull
-	private String telefono;
-
-	@NotNull
 	private String email;
 
 	@NotNull
@@ -89,7 +86,7 @@ public class Usuario implements Serializable {
 	public Usuario() {
 	}
 
-	public Usuario(String username, String email, String password, String nombre, String apellidos, String telefono,
+	public Usuario(String username, String email, String password, String nombre, String apellidos,
 			String tokenFireBase, Date fechaRegistro) {
 
 		this.username = username;
@@ -97,7 +94,6 @@ public class Usuario implements Serializable {
 		this.password = password;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.telefono = telefono;
 		this.tokenFireBase = tokenFireBase;
 		this.fechaRegistro = fechaRegistro;
 
@@ -149,14 +145,6 @@ public class Usuario implements Serializable {
 
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
-	}
-
-	public String getTelefono() {
-		return telefono;
-	}
-
-	public void setTelefono(String telefono) {
-		this.telefono = telefono;
 	}
 
 	public Municipio getMunicipio() {

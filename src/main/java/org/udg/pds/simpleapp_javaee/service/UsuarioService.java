@@ -67,7 +67,7 @@ public class UsuarioService {
 				log.log(Level.INFO, "Token en el registro: " + registro.tokenFireBase);
 				Usuario nuevoUsuario = new Usuario(registro.username, registro.email,
 						HashPassword.passwordHash(registro.password, registro.email), registro.nombre,
-						registro.apellidos, registro.telefono, registro.tokenFireBase, new Date());
+						registro.apellidos, registro.tokenFireBase, new Date());
 				nuevoUsuario.setMunicipio(obtenerMunicipio(registro.municipio));
 				nuevoUsuario.setDeportesFavoritos(obtenerDeportesFavoritos(registro.deportesFavoritos));
 				Imagen imagenPorDefecto = new Imagen(Global.NO_IMAGEN_PERFIL);
@@ -113,7 +113,6 @@ public class UsuarioService {
 
 			usuario.setNombre(datosPerfil.nombre);
 			usuario.setApellidos(datosPerfil.apellidos);
-			usuario.setTelefono(datosPerfil.telefono);
 
 			em.persist(usuario);
 			return usuario;

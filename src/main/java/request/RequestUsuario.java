@@ -27,8 +27,6 @@ public class RequestUsuario {
 		@NotNull
 		public String apellidos;
 		@NotNull
-		public String telefono;
-		@NotNull
 		public String tokenFireBase;
 		@NotNull
 		public Long municipio;
@@ -44,8 +42,6 @@ public class RequestUsuario {
 		public String nombre;
 		@NotNull
 		public String apellidos;
-		@NotNull
-		public String telefono;
 		@NotNull
 		public Long municipio;
 		@NotNull

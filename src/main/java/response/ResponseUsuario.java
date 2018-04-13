@@ -20,7 +20,6 @@ public class ResponseUsuario {
 		public String username;
 		public String nombre;
 		public String apellidos;
-		public String telefono;
 		public String email;
 		@JsonSerialize(using = JsonDateSerializer.class)
 		@JsonDeserialize(as = JsonDateDeserializer.class)
@@ -35,7 +34,6 @@ public class ResponseUsuario {
 			this.username = u.getUsername();
 			this.nombre = u.getNombre();
 			this.apellidos = u.getApellidos();
-			this.telefono = u.getTelefono();
 			this.email = u.getEmail();
 			this.fechaRegistro = u.getFechaRegistro();
 			this.municipio = u.getMunicipio();
