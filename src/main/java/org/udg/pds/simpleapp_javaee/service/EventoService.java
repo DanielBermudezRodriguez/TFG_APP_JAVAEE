@@ -186,7 +186,7 @@ public class EventoService {
 					}
 				}
 				consultaString += "and ((e.ubicacionGPS is not null and " + Global.FORMULA_DISTANCIA_GPS
-						+ " <= :distancia) or (e.ubicacionGPS is null and " + Global.FORMULA_DISTANCIA_GPS_ESTIMADA
+						+ " <= :distancia) or (e.ubicacionGPS is null and e.municipio is not null and " + Global.FORMULA_DISTANCIA_GPS_ESTIMADA
 						+ " <= :distancia )) ";
 			}
 		}
@@ -194,6 +194,9 @@ public class EventoService {
 		else if (municipio != null && municipio != 0) {
 			consultaString += "and e.municipio.id = :municipio ";
 		}
+		
+		// Ordenamos los resultados por fecha del evento
+		consultaString += " order by e.fechaEvento ";
 
 		// Crear consulta
 		consulta = em.createQuery(consultaString);

@@ -1,3 +1,4 @@
+
 INSERT INTO Estado VALUES (1, 'Abierto');
 INSERT INTO Estado VALUES (2, 'Completo');
 INSERT INTO Estado VALUES (3, 'Suspendido');

@@ -13,6 +13,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class ResponseUsuario {
+	
+	public static class ResponseInformacionBasicaUsuario {
+		
+		public Long id;
+		public String username;
+		public String email;
+		
+		public ResponseInformacionBasicaUsuario(Usuario u) {
+			this.id = u.getId();
+			this.username = u.getUsername();
+			this.email = u.getEmail();
+		}
+	}
 
 	public static class ResponseInformacionUsuario {
 

@@ -37,7 +37,7 @@ public class UsuarioRESTService extends GenericRESTService {
 		if (!estaUsuarioLogeado(req)) {
 			Usuario u = usuarioService.verificarPassword(login);
 			req.getSession().setAttribute(Global.AUTH_ID, u.getId());
-			return buildResponse(new ResponseGenericId(u.getId()));
+			return buildResponse(new ResponseUsuario.ResponseInformacionBasicaUsuario(u));
 		} else {
 			throw new WebApplicationException("Ya ha iniciado sesión");
 		}
@@ -51,7 +51,7 @@ public class UsuarioRESTService extends GenericRESTService {
 		if (!estaUsuarioLogeado(req)) {
 			Usuario u = usuarioService.registro(registro);
 			req.getSession().setAttribute(Global.AUTH_ID, u.getId());
-			return buildResponse(new ResponseGenericId(u.getId()));
+			return buildResponse(new ResponseUsuario.ResponseInformacionBasicaUsuario(u));
 		}
 		throw new WebApplicationException("No se puede registrar un usuario logeado");
 

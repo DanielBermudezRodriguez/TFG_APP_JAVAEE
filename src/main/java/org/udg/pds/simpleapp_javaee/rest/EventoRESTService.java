@@ -60,7 +60,7 @@ public class EventoRESTService extends GenericRESTService {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response buscadorEventos(@Context HttpServletRequest req,
-			@DefaultValue("10") @QueryParam("limite") int limite, // cantidad de resultados a partir del offser indicado
+			@DefaultValue("10") @QueryParam("limite") int limite, // cantidad de resultados a partir del offset indicado
 			@DefaultValue("0") @QueryParam("offset") int offset, // posición del primer evento en la lista obtenida
 			@DefaultValue("") @QueryParam("titulo") String titulo, @QueryParam("deportes") final List<Long> deportes,
 			@QueryParam("fechaEvento") Date fechaEvento, @DefaultValue("-1") @QueryParam("distancia") Integer distancia,

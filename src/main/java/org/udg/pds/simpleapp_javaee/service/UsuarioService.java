@@ -223,11 +223,16 @@ public class UsuarioService {
 	}
 
 	public String obtenerImagen(Long idUsuario) {
-		Usuario u = em.find(Usuario.class, idUsuario);
-		if (u != null) {
-			return u.getImagen().getRuta();
-		} else
-			throw new EJBException("El usuario no existe");
+		if (idUsuario.equals(0L)) {
+			return Global.NO_IMAGEN_PERFIL;
+		} else {
+			Usuario u = em.find(Usuario.class, idUsuario);
+			if (u != null) {
+				return u.getImagen().getRuta();
+			} else
+				throw new EJBException("El usuario no existe");
+		}
+
 	}
 
 	public Imagen eliminarImagenPerfil(Long idUsuario, Path baseDir) {
