@@ -191,7 +191,7 @@ public class EventoService {
 			}
 		}
 		// Escojer eventos por municipio seleccionado
-		else if (municipio != null && municipio != 0) {
+		else if (municipio != null && municipio != -1) {
 			consultaString += "and e.municipio.id = :municipio ";
 		}
 		
@@ -232,7 +232,7 @@ public class EventoService {
 			consulta.setParameter("km", Global.KM_DISTANCIA);
 		}
 
-		if (municipio != null && municipio != 0) {
+		if (municipio != null && municipio != -1) {
 			consulta.setParameter("municipio", municipio);
 		}
 

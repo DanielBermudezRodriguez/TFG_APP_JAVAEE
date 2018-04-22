@@ -1,5 +1,7 @@
 package org.udg.pds.simpleapp_javaee.rest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -63,13 +65,20 @@ public class EventoRESTService extends GenericRESTService {
 			@DefaultValue("10") @QueryParam("limite") int limite, // cantidad de resultados a partir del offset indicado
 			@DefaultValue("0") @QueryParam("offset") int offset, // posición del primer evento en la lista obtenida
 			@DefaultValue("") @QueryParam("titulo") String titulo, @QueryParam("deportes") final List<Long> deportes,
-			@QueryParam("fechaEvento") Date fechaEvento, @DefaultValue("-1") @QueryParam("distancia") Integer distancia,
-			@DefaultValue("0") @QueryParam("municipio") Long municipio) {
+			@QueryParam("fechaEvento") String fechaEvento,
+			@DefaultValue("-1") @QueryParam("distancia") Integer distancia,
+			@DefaultValue("-1") @QueryParam("municipio") Long municipio) {
 		if (estaUsuarioLogeado(req)) {
-			List<ResponseEvento.ResponseEventoInformacion> eventos = eventoService.buscadorEventos(
-					obtenerUsuarioLogeado(req), limite, offset, titulo, deportes, fechaEvento, distancia, municipio);
-			return buildResponse(eventos);
-
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date fecha = null;
+			try {
+				if (fechaEvento != null && !fechaEvento.isEmpty())fecha = sdf.parse(fechaEvento);
+				List<ResponseEvento.ResponseEventoInformacion> eventos = eventoService.buscadorEventos(
+						obtenerUsuarioLogeado(req), limite, offset, titulo, deportes, fecha, distancia, municipio);
+				return buildResponse(eventos);
+			} catch (ParseException e) {
+				throw new WebApplicationException("Error en la búsqueda de eventos");
+			}
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
 		}
