@@ -54,10 +54,12 @@ public class ResponseEvento {
 	public static class ResponseAdministradorEvento {
 		public Long id;
 		public String username;
+		public String email;
 
 		public ResponseAdministradorEvento(Usuario u) {
 			this.id = u.getId();
 			this.username = u.getUsername();
+			this.email = u.getEmail();
 		}
 
 	}
