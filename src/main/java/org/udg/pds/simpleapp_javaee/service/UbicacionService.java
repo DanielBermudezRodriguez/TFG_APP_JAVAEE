@@ -34,11 +34,22 @@ public class UbicacionService {
 
 		Usuario usuario = em.find(Usuario.class, idUsuario);
 		if (usuario != null) {
-			Ubicacion ubicacion = new Ubicacion(datosUbicacion.latitud, datosUbicacion.longitud,
-					datosUbicacion.direccion, municipio);
-			usuario.setUbicacionGPS(ubicacion);
-			em.persist(ubicacion);
-			return ubicacion;
+			
+			if (usuario.getUbicacionGPS() == null) {
+				Ubicacion ubicacion = new Ubicacion(datosUbicacion.latitud, datosUbicacion.longitud,
+						datosUbicacion.direccion, municipio);
+				usuario.setUbicacionGPS(ubicacion);
+				em.persist(ubicacion);
+				return ubicacion;
+			}
+			else {
+				usuario.getUbicacionGPS().setLatitud(datosUbicacion.latitud);
+				usuario.getUbicacionGPS().setLongitud(datosUbicacion.longitud);
+				usuario.getUbicacionGPS().setDireccion(datosUbicacion.direccion);
+				usuario.getUbicacionGPS().setMunicipio(municipio);
+				return usuario.getUbicacionGPS();
+			}
+
 		} else
 			throw new EJBException("El usuario no está registrado");
 	}

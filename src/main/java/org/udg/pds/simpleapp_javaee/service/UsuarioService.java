@@ -50,7 +50,7 @@ public class UsuarioService {
 			} else
 				throw new EJBException("Email o contraseña incorrectos");
 		} else
-			throw new EJBException("No existe un usuario registrado con el email " + login.email);
+			throw new EJBException("Email o contraseña incorrectos");
 
 	}
 

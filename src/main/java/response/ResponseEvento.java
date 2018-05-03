@@ -5,6 +5,7 @@ import java.util.Date;
 import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
+import org.udg.pds.simpleapp_javaee.model.Foro;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateDeserializer;
@@ -30,6 +31,7 @@ public class ResponseEvento {
 		public int participantesRegistrados;
 		public ResponseAdministradorEvento administrador;
 		public Municipio municipio;
+		public Foro foro;
 
 		public ResponseEventoInformacion(Evento e, Integer participantesRegistrados) {
 			this.id = e.getId();
@@ -46,6 +48,7 @@ public class ResponseEvento {
 				this.municipio = e.getUbicacionGPS().getMunicipio();
 			else if (e.getMunicipio() != null)
 				this.municipio = e.getMunicipio();
+			this.foro = e.getForo();
 
 		}
 

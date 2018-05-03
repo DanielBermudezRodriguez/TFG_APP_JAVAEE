@@ -52,7 +52,7 @@ public class Evento implements Serializable {
 	private Date fechaEvento;
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	private Foro foro;
 
 	@JsonIgnore
