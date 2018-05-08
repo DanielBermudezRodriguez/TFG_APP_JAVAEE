@@ -13,7 +13,9 @@ public class Global {
 	public static final String DATABASE_URL_FIREBASE = "https://tfg-geinf.firebaseio.com";
 	public static final String URL_FIREBASE_GOOGLE = "https://fcm.googleapis.com/fcm/send";
 	public static final String API_KEY_FIREBASE = "AIzaSyCnV9cBkKYzkIjXh2N22-AdjEPIRb-0QdQ";
-	public static final String VARIABLE_SISTEMA_IMAGENES = "DIR_TFG_IMAGES";
+	//public static final String VARIABLE_SISTEMA_IMAGENES = "DIR_TFG_IMAGES";
+	public static final String VARIABLE_ENTORNO_IMAGENES_USUARIOS = "DIR_TFG_IMAGES_USERS";
+	public static final String VARIABLE_ENTORNO_IMAGENES_EVENTOS = "DIR_TFG_IMAGES_EVENTS";
 	public static final String NOTIFICACION_EVENTO_CANCELADO = "0";
 	public static final String NO_IMAGEN_PERFIL = "no-image.png";
 

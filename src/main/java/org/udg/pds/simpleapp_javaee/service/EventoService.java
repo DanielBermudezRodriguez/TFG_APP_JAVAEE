@@ -1,5 +1,9 @@
 package org.udg.pds.simpleapp_javaee.service;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +23,7 @@ import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Foro;
+import org.udg.pds.simpleapp_javaee.model.Imagen;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
@@ -44,9 +49,18 @@ public class EventoService {
 	private Event<Evento> eventoCancelado;
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date fecha = null;
+		if (datosEvento.fechaEvento != null && !datosEvento.fechaEvento.isEmpty())
+			try {
+				fecha = sdf.parse(datosEvento.fechaEvento);
+			} catch (ParseException e1) {
+				throw new EJBException("Error en la creación del evento");
+			}
 		// crear evento datos básicos
 		Evento evento = new Evento(datosEvento.titulo, datosEvento.descripcion, datosEvento.duracion,
-				datosEvento.numeroParticipantes, datosEvento.fechaEvento, em.find(Estado.class, Global.EVENTO_ABIERTO));
+				datosEvento.numeroParticipantes, fecha, em.find(Estado.class, Global.EVENTO_ABIERTO));
 
 		// Evento creado por municipio seleccionada o ubicación GPS seleccionada
 		if (datosEvento.municipio != null) {
@@ -93,6 +107,11 @@ public class EventoService {
 			deporte.addEventoDeportivo(evento);
 		} else
 			throw new EJBException("El deporte indicado no existe");
+
+		// Cargamos imagen por defecto a la hora de crear un evento
+		Imagen imagenPorDefecto = new Imagen(Global.NO_IMAGEN_PERFIL);
+		em.persist(imagenPorDefecto);
+		evento.setImagen(imagenPorDefecto);
 
 		em.persist(evento);
 		return evento;
@@ -186,15 +205,15 @@ public class EventoService {
 					}
 				}
 				consultaString += "and ((e.ubicacionGPS is not null and " + Global.FORMULA_DISTANCIA_GPS
-						+ " <= :distancia) or (e.ubicacionGPS is null and e.municipio is not null and " + Global.FORMULA_DISTANCIA_GPS_ESTIMADA
-						+ " <= :distancia )) ";
+						+ " <= :distancia) or (e.ubicacionGPS is null and e.municipio is not null and "
+						+ Global.FORMULA_DISTANCIA_GPS_ESTIMADA + " <= :distancia )) ";
 			}
 		}
 		// Escojer eventos por municipio seleccionado
 		else if (municipio != null && municipio != -1) {
 			consultaString += "and e.municipio.id = :municipio ";
 		}
-		
+
 		// Ordenamos los resultados por fecha del evento
 		consultaString += " order by e.fechaEvento ";
 
@@ -256,6 +275,43 @@ public class EventoService {
 			return new ResponseEvento.ResponseEventoInformacion(e, e.getParticipantes().size());
 		} else
 			throw new EJBException("El evento solicitado no existe");
+
+	}
+
+	public Imagen guardarImagenEvento(Long idEvento, List<String> imagenSubida, Path baseDir) {
+		Evento e = em.find(Evento.class, idEvento);
+		if (e != null) {
+			if (imagenSubida != null && !imagenSubida.isEmpty()) {
+				Imagen imagen = e.getImagen();
+				eliminarImagenEvento(imagen, baseDir);
+				imagen.setRuta(imagenSubida.get(0));
+				return imagen;
+			} else
+				throw new EJBException("No se puede subir la imagen");
+		} else
+			throw new EJBException("El usuario no existe");
+	}
+
+	private void eliminarImagenEvento(Imagen imagen, Path baseDir) {
+		if (!imagen.getRuta().equals(Global.NO_IMAGEN_PERFIL)) {
+			File file = new File(baseDir.toString() + "\\" + imagen.getRuta());
+			if (file.delete())
+				log.log(Level.INFO, "Imagen eliminada correctamente");
+			else
+				log.log(Level.INFO, "No se pudo eliminar la imagen");
+		}
+	}
+
+	public String obtenerImagen(Long idEvento) {
+		if (idEvento.equals(0L)) {
+			return Global.NO_IMAGEN_PERFIL;
+		} else {
+			Evento e = em.find(Evento.class, idEvento);
+			if (e != null) {
+				return e.getImagen().getRuta();
+			} else
+				throw new EJBException("El usuario no existe");
+		}
 
 	}
 

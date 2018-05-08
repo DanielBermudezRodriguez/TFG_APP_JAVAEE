@@ -72,7 +72,7 @@ public class ParticipanteService {
 							}
 							return evento;
 						} else
-							throw new EJBException("El usuario no está registrado en el evento");
+							throw new EJBException("No participas en el evento");
 					} else
 						throw new EJBException("No puede desregistrar otros usuarios de un evento");
 

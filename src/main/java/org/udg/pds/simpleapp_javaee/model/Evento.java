@@ -34,10 +34,10 @@ public class Evento implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Long id;
 
-	@Column(length = 20, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String titulo;
 
-	@Column(length = 100, nullable = false)
+	@Column(length = 500, nullable = false)
 	private String descripcion;
 
 	@NotNull
@@ -78,6 +78,10 @@ public class Evento implements Serializable {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Estado estado;
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	private Imagen imagen;
 
 	public Evento() {
 	}
@@ -198,5 +202,15 @@ public class Evento implements Serializable {
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
+
+	public Imagen getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(Imagen imagen) {
+		this.imagen = imagen;
+	}
+	
+	
 
 }

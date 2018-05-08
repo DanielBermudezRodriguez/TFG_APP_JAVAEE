@@ -1,9 +1,6 @@
 package request;
 
-import java.util.Date;
-
 import javax.validation.constraints.NotNull;
-
 import request.RequestUbicacion.RequestUbicacionUsuario;
 
 public class RequestEvento {
@@ -18,7 +15,7 @@ public class RequestEvento {
 		@NotNull
 		public int numeroParticipantes;
 		@NotNull
-		public Date fechaEvento;
+		public String fechaEvento;
 		@NotNull
 		public Boolean esPublico;
 		public Long municipio;
