@@ -119,7 +119,7 @@ public class ImagenRESTService extends GenericRESTService {
 				MultivaluedMap<String, String> headers = inputPart.getHeaders();
 				String nombreImagen = crearNombreImagen(idUsuario, headers);
 				InputStream istream = inputPart.getBody(InputStream.class, null);
-				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS) + nombreImagen;
+				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS)+ "\\" + nombreImagen;
 				saveFile(istream, rutaImagen);
 				imagenesSubidas.add(nombreImagen);
 			} catch (Exception e) {
@@ -139,7 +139,7 @@ public class ImagenRESTService extends GenericRESTService {
 				MultivaluedMap<String, String> headers = inputPart.getHeaders();
 				String nombreImagen = crearNombreImagen(idEvento, headers);
 				InputStream istream = inputPart.getBody(InputStream.class, null);
-				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_EVENTOS) + nombreImagen;
+				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_EVENTOS) + "\\" + nombreImagen;
 				saveFile(istream, rutaImagen);
 				imagenesSubidas.add(nombreImagen);
 			} catch (Exception e) {
