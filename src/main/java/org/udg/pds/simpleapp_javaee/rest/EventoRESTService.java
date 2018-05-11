@@ -48,11 +48,12 @@ public class EventoRESTService extends GenericRESTService {
 
 	}
 
+	@Path("{idEvento}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response cancelarEvento(@Context HttpServletRequest req, @Valid RequestGenericId idEvento) {
+	public Response cancelarEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento) {
 		if (estaUsuarioLogeado(req)) {
-			Evento e = eventoService.cancelarEvento(obtenerUsuarioLogeado(req), idEvento.id);
+			Evento e = eventoService.cancelarEvento(obtenerUsuarioLogeado(req), idEvento);
 			return buildResponse(new ResponseGenericId(e.getId()));
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");

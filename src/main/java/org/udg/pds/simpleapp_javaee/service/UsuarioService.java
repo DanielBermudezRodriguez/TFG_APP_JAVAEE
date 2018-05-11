@@ -5,6 +5,7 @@ import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Imagen;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
+import org.udg.pds.simpleapp_javaee.util.EventosComparator;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import org.udg.pds.simpleapp_javaee.util.HashPassword;
 import request.RequestUsuario.RequestLoginUsuario;
@@ -16,6 +17,7 @@ import response.ResponseEvento.ResponseEventoInformacion;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -182,14 +184,17 @@ public class UsuarioService {
 			// Eventos administrados
 			if (tipo.equals(0L)) {
 				eventos = u.getEventosCreados();
+				Collections.sort(eventos, new EventosComparator());
 			} // Eventos apuntado
 			else if (tipo.equals(1L)) {
 				eventos = u.getEventosRegistrado();
+				Collections.sort(eventos, new EventosComparator());
 			} else
 				throw new EJBException(
 						"El tipo no es válido. Introduzca (0) para recuperar sus eventos creados o (1) para recuperar los eventos en que está inscrito");
 			List<ResponseEvento.ResponseEventoInformacion> responseEventos = new ArrayList<>();
 			for (Evento e : eventos) {
+				// En caso de que se quieran obtener los eventos registrados, no devolvemos los eventos administrados y a la vez participe el administrador
 				if (!(tipo.equals(1L) && e.getAdministrador().getId().equals(idUsuario)))
 					responseEventos.add(new ResponseEvento.ResponseEventoInformacion(e, e.getParticipantes().size()));
 			}

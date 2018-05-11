@@ -52,7 +52,7 @@ public class ImagenRESTService extends GenericRESTService {
 			@PathParam("idEvento") Long idEvento) {
 		if (estaUsuarioLogeado(req)) {
 			List<String> imagenSubida = subirImagenEvento(input, idEvento);
-			Imagen imagen = eventoService.guardarImagenEvento(obtenerUsuarioLogeado(req), imagenSubida,
+			Imagen imagen = eventoService.guardarImagenEvento(idEvento, imagenSubida,
 					BASE_DIR_IMAGES_EVENTS);
 			return buildResponse(imagen);
 		} else {
