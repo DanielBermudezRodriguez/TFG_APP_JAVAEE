@@ -54,31 +54,24 @@ public class ParticipanteService {
 		Evento evento = em.find(Evento.class, idEvento);
 		if (evento != null) {
 			Estado estadoEvento = evento.getEstado();
-			if (estadoEvento.getId().equals(Global.EVENTO_FINALIZADO))
-				throw new EJBException("El evento ya ha finalizado");
-			else if (estadoEvento.getId().equals(Global.EVENTO_SUSPENDIDO))
-				throw new EJBException("El evento está suspendido");
-			else {
-				Usuario usuario = em.find(Usuario.class, idUsuario);
-				if (usuario != null) {
-					// Un mismo usuario se da de baja o el administrador
-					if (idUsuarioLogeado.equals(idUsuario)
-							|| idUsuarioLogeado.equals(evento.getAdministrador().getId())) {
-						if (usuario.getEventosRegistrado().contains(evento)) {
-							usuario.getEventosRegistrado().remove(evento);
-							evento.getParticipantes().remove(usuario);
-							if (evento.getNumeroParticipantes() > evento.getParticipantes().size()) {
-								evento.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
-							}
-							return evento;
-						} else
-							throw new EJBException("No participas en el evento");
+			Usuario usuario = em.find(Usuario.class, idUsuario);
+			if (usuario != null) {
+				// Un mismo usuario se da de baja o el administrador
+				if (idUsuarioLogeado.equals(idUsuario) || idUsuarioLogeado.equals(evento.getAdministrador().getId())) {
+					if (usuario.getEventosRegistrado().contains(evento)) {
+						usuario.getEventosRegistrado().remove(evento);
+						evento.getParticipantes().remove(usuario);
+						if (evento.getNumeroParticipantes() > evento.getParticipantes().size()) {
+							evento.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
+						}
+						return evento;
 					} else
-						throw new EJBException("No puede desregistrar otros usuarios de un evento");
-
+						throw new EJBException("No participas en el evento");
 				} else
-					throw new EJBException("El usuario no existe");
-			}
+					throw new EJBException("No puede desregistrar otros usuarios de un evento");
+
+			} else
+				throw new EJBException("El usuario no existe");
 		} else
 			throw new EJBException("El evento no existe");
 	}
