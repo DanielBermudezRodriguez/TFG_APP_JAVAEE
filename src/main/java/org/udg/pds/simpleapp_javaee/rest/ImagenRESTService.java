@@ -164,10 +164,10 @@ public class ImagenRESTService extends GenericRESTService {
 
 		// Comprimir imagen
 		BufferedImage original = ImageIO.read(uploadedInputStream);
-		BufferedImage image = resize(original, 500, 500); // resize a 500px x 500 px
+		//BufferedImage image = resize(original, 500, 500); // resize a 500px x 500 px
 		File output = new File(serverLocation);
-		ImageIO.write(image, "jpg", output); // jpg muxo menos tamaño que png
-
+		//ImageIO.write(image, "jpg", output); // jpg muxo menos tamaño que png
+		ImageIO.write(original, "jpg", output); // jpg muxo menos tamaño que png
 		// FRAGMENTO CÓDIGO BAJAR CALIDAD
 
 		// double aspectRatio = (double) img.getWidth(null)/(double)
