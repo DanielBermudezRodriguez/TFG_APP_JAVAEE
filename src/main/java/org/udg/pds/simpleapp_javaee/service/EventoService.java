@@ -60,7 +60,7 @@ public class EventoService {
 			}
 		// crear evento datos básicos
 		Evento evento = new Evento(datosEvento.titulo, datosEvento.descripcion, datosEvento.duracion,
-				datosEvento.numeroParticipantes, fecha, em.find(Estado.class, Global.EVENTO_ABIERTO));
+				datosEvento.numeroParticipantes, fecha, (datosEvento.numeroParticipantes == 1) ? em.find(Estado.class, Global.EVENTO_COMPLETO) :em.find(Estado.class, Global.EVENTO_ABIERTO));
 
 		// Evento creado por municipio seleccionada o ubicación GPS seleccionada
 		if (datosEvento.municipio != null) {
