@@ -108,7 +108,9 @@ public class UsuarioService {
 				usuario.setUsername(datosPerfil.username);
 
 			// Validar municipio existe
-			usuario.setMunicipio(obtenerMunicipio(datosPerfil.municipio));
+			if (datosPerfil.municipio != -1)
+				usuario.setMunicipio(obtenerMunicipio(datosPerfil.municipio));
+
 
 			// Validar deportes
 			usuario.setDeportesFavoritos(obtenerDeportesFavoritos(datosPerfil.deportesFavoritos));

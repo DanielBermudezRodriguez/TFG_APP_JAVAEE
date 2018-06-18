@@ -111,13 +111,13 @@ public class UsuarioRESTService extends GenericRESTService {
 	// tipo = 0 ; Eventos creados y administrados por el usuario.
 	// tipo = 1 ; Eventos en los que está apuntado el usuario.
 	@GET
-	@Path("evento/{tipo}")
+	@Path("evento/{idUsuario}/{tipo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response obtenerEventosUsuario(@Context HttpServletRequest req, @PathParam("tipo") Long tipo) {
+	public Response obtenerEventosUsuario(@Context HttpServletRequest req,@PathParam("idUsuario") Long idUsuario ,@PathParam("tipo") Long tipo) {
 
 		if (estaUsuarioLogeado(req)) {
 			List<ResponseEvento.ResponseEventoInformacion> eventos = usuarioService
-					.obtenerEventosUsuario(obtenerUsuarioLogeado(req), tipo);
+					.obtenerEventosUsuario(idUsuario, tipo);
 			return buildResponse(eventos);
 		}
 		throw new WebApplicationException("No ha iniciado sesión");
