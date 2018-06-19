@@ -76,9 +76,25 @@ public class ImagenRESTService extends GenericRESTService {
 	}
 
 	@GET
-	@Path("/usuario/{idUsuario}")
+	@Path("/usuario/nombre/{idUsuario}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerNombreImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario) {
+		String nombreImagen = usuarioService.obtenerImagen(idUsuario);
+		return buildResponse(nombreImagen);
+	}
+	
+	@GET
+	@Path("/evento/nombre/{idEvento}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response obtenerNombreImagenEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento) {
+		String nombreImagen = eventoService.obtenerImagen(idEvento);
+		return buildResponse(nombreImagen);
+	}
+	
+	@GET
+	@Path("/usuario/{idUsuario}/{nombreImagen}")
 	@Produces({ "image/png", "image/jpg" })
-	public Response obtenerImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario) {
+	public Response obtenerImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario, @PathParam("nombreImagen") String nombreImg) {
 		String nombreImagen = usuarioService.obtenerImagen(idUsuario);
 		File file = new File(BASE_DIR_IMAGES_USERS.toString() + "\\" + nombreImagen);
 		ResponseBuilder response = Response.ok((Object) file);
@@ -87,9 +103,9 @@ public class ImagenRESTService extends GenericRESTService {
 	}
 	
 	@GET
-	@Path("/evento/{idEvento}")
+	@Path("/evento/{idEvento}/{nombreImagen}")
 	@Produces({ "image/png", "image/jpg" })
-	public Response obtenerImagenEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento) {
+	public Response obtenerImagenEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento, @PathParam("nombreImagen") String nombreImg) {
 		//String nombreImagen = usuarioService.obtenerImagen(idUsuario);
 		String nombreImagen = eventoService.obtenerImagen(idEvento);
 		File file = new File(BASE_DIR_IMAGES_EVENTS.toString() + "\\" + nombreImagen);
