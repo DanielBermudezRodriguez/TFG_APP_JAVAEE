@@ -58,6 +58,10 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.EAGER)
 	private Imagen imagen;
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	private Notificacion notificacion;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -96,7 +100,6 @@ public class Usuario implements Serializable {
 		this.apellidos = apellidos;
 		this.tokenFireBase = tokenFireBase;
 		this.fechaRegistro = fechaRegistro;
-
 		this.deportesFavoritos = new ArrayList<>();
 		this.eventosCreados = new ArrayList<>();
 		this.eventosRegistrado = new ArrayList<>();
@@ -233,5 +236,15 @@ public class Usuario implements Serializable {
 	public void setImagen(Imagen imagen) {
 		this.imagen = imagen;
 	}
+
+	public Notificacion getNotificacion() {
+		return notificacion;
+	}
+
+	public void setNotificacion(Notificacion notificacion) {
+		this.notificacion = notificacion;
+	}
+	
+	
 
 }

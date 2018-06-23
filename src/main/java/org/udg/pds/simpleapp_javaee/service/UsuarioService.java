@@ -4,6 +4,7 @@ import org.udg.pds.simpleapp_javaee.model.Deporte;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Imagen;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
+import org.udg.pds.simpleapp_javaee.model.Notificacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.EventosComparator;
 import org.udg.pds.simpleapp_javaee.util.Global;
@@ -72,6 +73,9 @@ public class UsuarioService {
 						registro.apellidos, registro.tokenFireBase, new Date());
 				nuevoUsuario.setMunicipio(obtenerMunicipio(registro.municipio));
 				nuevoUsuario.setDeportesFavoritos(obtenerDeportesFavoritos(registro.deportesFavoritos));
+				Notificacion notificacionDefecto = new Notificacion();
+				em.persist(notificacionDefecto);
+				nuevoUsuario.setNotificacion(notificacionDefecto);
 				Imagen imagenPorDefecto = new Imagen(Global.NO_IMAGEN_PERFIL);
 				em.persist(imagenPorDefecto);
 				nuevoUsuario.setImagen(imagenPorDefecto);
