@@ -13,6 +13,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -48,6 +49,26 @@ public class EventoRESTService extends GenericRESTService {
 
 	}
 
+	@PUT
+	@Path("{idUsuario}/{idEvento}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response modificarEvento(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario, @PathParam("idEvento") Long idEvento,
+			@Valid RequestCrearEvento datosEvento) {
+
+		if (estaUsuarioLogeado(req)) {
+			Long idSesion = obtenerUsuarioLogeado(req);
+			if (idSesion.equals(idUsuario)) {
+				Evento e = eventoService.modificarEventoDeportivo(datosEvento, idUsuario, idEvento);
+				return buildResponse(new ResponseGenericId(e.getId()));
+			} else
+				throw new WebApplicationException("No puede modificar eventos de otros usuarios");
+		} else {
+			throw new WebApplicationException("No ha iniciado sesión");
+		}
+
+	}
+
 	@Path("{idEvento}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
@@ -73,7 +94,8 @@ public class EventoRESTService extends GenericRESTService {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Date fecha = null;
 			try {
-				if (fechaEvento != null && !fechaEvento.isEmpty())fecha = sdf.parse(fechaEvento);
+				if (fechaEvento != null && !fechaEvento.isEmpty())
+					fecha = sdf.parse(fechaEvento);
 				List<ResponseEvento.ResponseEventoInformacion> eventos = eventoService.buscadorEventos(
 						obtenerUsuarioLogeado(req), limite, offset, titulo, deportes, fecha, distancia, municipio);
 				return buildResponse(eventos);

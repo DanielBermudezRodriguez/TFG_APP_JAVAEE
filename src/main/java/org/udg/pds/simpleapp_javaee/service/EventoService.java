@@ -52,12 +52,13 @@ public class EventoService {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date fecha = null;
-		if (datosEvento.fechaEvento != null && !datosEvento.fechaEvento.isEmpty())
+		if (datosEvento.fechaEvento != null && !datosEvento.fechaEvento.isEmpty()) {
 			try {
 				fecha = sdf.parse(datosEvento.fechaEvento);
 			} catch (ParseException e1) {
 				throw new EJBException("Error en la creación del evento");
 			}
+		}
 		// crear evento datos básicos
 		Evento evento = new Evento(datosEvento.titulo, datosEvento.descripcion, datosEvento.duracion,
 				datosEvento.numeroParticipantes, fecha, (datosEvento.numeroParticipantes == 1) ? em.find(Estado.class, Global.EVENTO_COMPLETO) :em.find(Estado.class, Global.EVENTO_ABIERTO));
@@ -311,6 +312,87 @@ public class EventoService {
 				return e.getImagen().getRuta();
 			} else
 				throw new EJBException("El usuario no existe");
+		}
+
+	}
+
+	public Evento modificarEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario, Long idEvento) {
+		Evento e = em.find(Evento.class,idEvento);
+		if (e != null) {
+			// Fecha evento
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			Date fecha = null;
+			if (datosEvento.fechaEvento != null && !datosEvento.fechaEvento.isEmpty()) {
+				try {
+					fecha = sdf.parse(datosEvento.fechaEvento);
+				} catch (ParseException e1) {
+					throw new EJBException("Error en la creación del evento");
+				}
+			}
+			e.setFechaEvento(fecha);
+			
+			// Título evento
+			e.setTitulo(datosEvento.titulo);
+			// Descripción evento
+			e.setDescripcion(datosEvento.descripcion);
+			// Duración evento
+			e.setDuracion(datosEvento.duracion);
+			// Número de participantes
+			e.setNumeroParticipantes(datosEvento.numeroParticipantes);
+			// Estado evento
+			if (datosEvento.numeroParticipantes == 0)  e.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
+			else if ((datosEvento.numeroParticipantes == 1) || (datosEvento.numeroParticipantes <= e.getParticipantes().size())) e.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
+			else if (datosEvento.numeroParticipantes > e.getParticipantes().size()) e.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
+			
+			// Se ha seleccionado un nuevo municipio diferente al anterior
+			if (datosEvento.municipio != null && datosEvento.municipio != -1L) {
+				Municipio municipio = em.find(Municipio.class, datosEvento.municipio);
+				if (municipio != null) {
+					municipio.addEvento(e);
+					e.setMunicipio(municipio);
+				} else
+					throw new EJBException("El municipio no existe");
+				if (e.getUbicacionGPS() != null) {
+					em.remove(e.getUbicacionGPS());
+					e.setUbicacionGPS(null);
+				} 
+			}
+			else if (datosEvento.ubicacionGPS != null) {
+				Query q = em.createNamedQuery("@HQL_GET_MUNICIPIO_BYNAME");
+				q.setParameter("municipio", datosEvento.ubicacionGPS.municipio.toLowerCase());
+				try {
+					Municipio municipio = (Municipio) q.getSingleResult();
+					municipio.addEvento(e);
+					e.setMunicipio(municipio);
+
+					if (e.getUbicacionGPS() != null) {
+						e.getUbicacionGPS().setDireccion(datosEvento.ubicacionGPS.direccion);
+						e.getUbicacionGPS().setLatitud(datosEvento.ubicacionGPS.latitud);
+						e.getUbicacionGPS().setLongitud(datosEvento.ubicacionGPS.longitud);
+						e.getUbicacionGPS().setMunicipio(municipio);
+					}
+					else {
+						Ubicacion u = new Ubicacion(datosEvento.ubicacionGPS.latitud, datosEvento.ubicacionGPS.longitud,
+								datosEvento.ubicacionGPS.direccion, municipio);
+						e.setUbicacionGPS(u);
+						em.persist(u);
+					}
+				} catch (Exception e2) {
+					throw new EJBException("No existe el municipio");
+				}
+			}
+			
+			Deporte deporte = em.find(Deporte.class, datosEvento.deporte);
+			if (deporte != null) {
+				e.setDeporte(deporte);
+				deporte.addEventoDeportivo(e);
+			} else
+				throw new EJBException("El deporte indicado no existe");
+			
+			em.persist(e);
+			return e;
+		}  else {
+			throw new EJBException("El evento no existe");
 		}
 
 	}

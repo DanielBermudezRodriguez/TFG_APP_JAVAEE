@@ -7,6 +7,8 @@ import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Foro;
 import org.udg.pds.simpleapp_javaee.model.Municipio;
+import org.udg.pds.simpleapp_javaee.model.Provincia;
+import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateDeserializer;
 import org.udg.pds.simpleapp_javaee.rest.serializer.JsonDateSerializer;
@@ -31,7 +33,9 @@ public class ResponseEvento {
 		public int participantesRegistrados;
 		public ResponseAdministradorEvento administrador;
 		public Municipio municipio;
+		public Provincia provincia;
 		public Foro foro;
+		public Ubicacion ubicacion;
 
 		public ResponseEventoInformacion(Evento e, Integer participantesRegistrados) {
 			this.id = e.getId();
@@ -44,10 +48,15 @@ public class ResponseEvento {
 			this.estado = e.getEstado();
 			this.participantesRegistrados = participantesRegistrados;
 			this.administrador = new ResponseAdministradorEvento(e.getAdministrador());
-			if (e.getUbicacionGPS() != null)
+			if (e.getUbicacionGPS() != null) {
 				this.municipio = e.getUbicacionGPS().getMunicipio();
-			else if (e.getMunicipio() != null)
+				this.provincia = e.getUbicacionGPS().getMunicipio().getProvincia();
+				this.ubicacion = e.getUbicacionGPS();
+			} else if (e.getMunicipio() != null) {
 				this.municipio = e.getMunicipio();
+				this.provincia = e.getMunicipio().getProvincia();
+				this.ubicacion = null;
+			}
 			this.foro = e.getForo();
 
 		}
