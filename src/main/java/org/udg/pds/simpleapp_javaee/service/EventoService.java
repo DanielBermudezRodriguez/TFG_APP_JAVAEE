@@ -29,6 +29,7 @@ import org.udg.pds.simpleapp_javaee.model.Ubicacion;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.Global;
 import org.udg.pds.simpleapp_javaee.util.notificaciones.EventoCancelado;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.EventoModificado;
 
 import request.RequestEvento.RequestCrearEvento;
 import response.ResponseEvento;
@@ -47,6 +48,10 @@ public class EventoService {
 	@Inject
 	@EventoCancelado
 	private Event<Evento> eventoCancelado;
+	
+	@Inject
+	@EventoModificado
+	private Event<Evento> eventoModificado;
 
 	public Evento crearEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario) {
 
@@ -388,7 +393,7 @@ public class EventoService {
 				deporte.addEventoDeportivo(e);
 			} else
 				throw new EJBException("El deporte indicado no existe");
-			
+			eventoModificado.fire(e);
 			em.persist(e);
 			return e;
 		}  else {

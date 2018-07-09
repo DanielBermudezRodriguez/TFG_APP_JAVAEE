@@ -17,6 +17,10 @@ public class Global {
 	public static final String VARIABLE_ENTORNO_IMAGENES_USUARIOS = "DIR_TFG_IMAGES_USERS";
 	public static final String VARIABLE_ENTORNO_IMAGENES_EVENTOS = "DIR_TFG_IMAGES_EVENTS";
 	public static final String NOTIFICACION_EVENTO_CANCELADO = "0";
+	public static final String NOTIFICACION_DESAPUNTADO_DEL_EVENTO = "1";
+	public static final String NOTIFICACION_EVENTO_MODIFICADO = "2";
+	public static final String NOTIFICACION_EVENTO_ALTA_USUARIO = "3";
+	public static final String NOTIFICACION_EVENTO_BAJA_USUARIO = "4";
 	public static final String NO_IMAGEN_PERFIL = "no-image.png";
 
 }

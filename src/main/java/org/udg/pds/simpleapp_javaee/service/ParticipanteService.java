@@ -6,12 +6,18 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.udg.pds.simpleapp_javaee.model.Estado;
 import org.udg.pds.simpleapp_javaee.model.Evento;
 import org.udg.pds.simpleapp_javaee.model.Usuario;
 import org.udg.pds.simpleapp_javaee.util.Global;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.AltaUsuario;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.BajaUsuario;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.DesapuntadoEvento;
+import org.udg.pds.simpleapp_javaee.util.notificaciones.NotificacionUsuarioEvento;
 
 @Stateless
 @LocalBean
@@ -19,6 +25,18 @@ public class ParticipanteService {
 
 	@PersistenceContext
 	private EntityManager em;
+	
+	@Inject
+	@DesapuntadoEvento
+	private Event<NotificacionUsuarioEvento> desapuntadoEvento;
+	
+	@Inject
+	@AltaUsuario
+	private Event<NotificacionUsuarioEvento> altaUsuarioEvento;
+	
+	@Inject
+	@BajaUsuario
+	private Event<NotificacionUsuarioEvento> bajaUsuarioEvento;
 
 	public Evento addParticipanteEvento(Long idUsuario, Long idEvento) {
 		Evento evento = em.find(Evento.class, idEvento);
@@ -36,6 +54,9 @@ public class ParticipanteService {
 					if (!usuario.getEventosRegistrado().contains(evento)) {
 						usuario.addEventosRegistrado(evento);
 						evento.addParticipantes(usuario);
+						if (!evento.getAdministrador().getId().equals(idUsuario)) {
+							altaUsuarioEvento.fire(new NotificacionUsuarioEvento(evento, usuario));
+						}
 						if (evento.getNumeroParticipantes() == evento.getParticipantes().size()) {
 							evento.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
 						}
@@ -53,7 +74,6 @@ public class ParticipanteService {
 	public Evento eliminarParticipanteEvento(Long idUsuario, Long idEvento, Long idUsuarioLogeado) {
 		Evento evento = em.find(Evento.class, idEvento);
 		if (evento != null) {
-			Estado estadoEvento = evento.getEstado();
 			Usuario usuario = em.find(Usuario.class, idUsuario);
 			if (usuario != null) {
 				// Un mismo usuario se da de baja o el administrador
@@ -61,6 +81,14 @@ public class ParticipanteService {
 					if (usuario.getEventosRegistrado().contains(evento)) {
 						usuario.getEventosRegistrado().remove(evento);
 						evento.getParticipantes().remove(usuario);
+						// Administrador del evento da de baja a un usuario que no es el mismo lanzamos una notificación al usuario afectado
+						if (idUsuarioLogeado.equals(evento.getAdministrador().getId()) && idUsuarioLogeado != idUsuario ) {
+							desapuntadoEvento.fire(new NotificacionUsuarioEvento(evento,usuario));							
+						}
+						// Propio participante se da de baja de un evento
+						else if (!idUsuarioLogeado.equals(evento.getAdministrador().getId())) {
+							bajaUsuarioEvento.fire(new NotificacionUsuarioEvento(evento,usuario));
+						}
 						if (evento.getNumeroParticipantes() > evento.getParticipantes().size()) {
 							evento.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
 						}
