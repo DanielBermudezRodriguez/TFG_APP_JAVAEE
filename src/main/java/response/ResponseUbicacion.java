@@ -6,10 +6,14 @@ public class ResponseUbicacion {
 
 		public Double latitud;
 		public Double longitud;
+		public String direccion;
+		public String municipio;
 
-		public ResponseUbicacionEvento(Double latitud, Double longitud) {
+		public ResponseUbicacionEvento(Double latitud, Double longitud, String direccion, String municipio) {
 			this.latitud = latitud;
 			this.longitud = longitud;
+			this.direccion = direccion;
+			this.municipio = municipio;
 		}
 
 	}

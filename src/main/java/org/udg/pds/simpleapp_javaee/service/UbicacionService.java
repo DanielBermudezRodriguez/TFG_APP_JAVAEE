@@ -59,10 +59,10 @@ public class UbicacionService {
 		if (evento != null) {
 			if (evento.getUbicacionGPS() != null)
 				return new ResponseUbicacionEvento(evento.getUbicacionGPS().getLatitud(),
-						evento.getUbicacionGPS().getLongitud());
+						evento.getUbicacionGPS().getLongitud(), evento.getUbicacionGPS().getDireccion(), evento.getUbicacionGPS().getMunicipio().getMunicipio());
 			else if (evento.getMunicipio() != null)
 				return new ResponseUbicacionEvento(evento.getMunicipio().getLatitudEstimada(),
-						evento.getMunicipio().getLongitudEstimada());
+						evento.getMunicipio().getLongitudEstimada(),null,evento.getMunicipio().getMunicipio());
 			else
 				throw new EJBException("No hay ubicacion para el evento");
 		} else
