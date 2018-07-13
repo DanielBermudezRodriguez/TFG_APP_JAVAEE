@@ -74,6 +74,10 @@ public class Evento implements Serializable {
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosRegistrado", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Usuario> participantes;
+	
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "eventosEnCola", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Usuario> participantesEnCola;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -96,6 +100,7 @@ public class Evento implements Serializable {
 		this.estado = estado;
 
 		this.participantes = new ArrayList<>();
+		this.participantesEnCola = new ArrayList<>();
 	}
 
 	public Long getId() {
@@ -185,6 +190,19 @@ public class Evento implements Serializable {
 
 	public void addParticipantes(Usuario participante) {
 		this.participantes.add(participante);
+	}
+	
+	public void addParticipantesEnCola (Usuario participanteEnCola) {
+		this.participantesEnCola.add(participanteEnCola);
+	}
+
+	public List<Usuario> getParticipantesEnCola() {
+		participantesEnCola.size();
+		return participantesEnCola;
+	}
+
+	public void setParticipantesEnCola(List<Usuario> participantesEnCola) {
+		this.participantesEnCola = participantesEnCola;
 	}
 
 	public Foro getForo() {

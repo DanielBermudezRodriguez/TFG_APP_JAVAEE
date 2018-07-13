@@ -48,7 +48,7 @@ public class EventoService {
 	@Inject
 	@EventoCancelado
 	private Event<Evento> eventoCancelado;
-	
+
 	@Inject
 	@EventoModificado
 	private Event<Evento> eventoModificado;
@@ -66,7 +66,9 @@ public class EventoService {
 		}
 		// crear evento datos básicos
 		Evento evento = new Evento(datosEvento.titulo, datosEvento.descripcion, datosEvento.duracion,
-				datosEvento.numeroParticipantes, fecha, (datosEvento.numeroParticipantes == 1) ? em.find(Estado.class, Global.EVENTO_COMPLETO) :em.find(Estado.class, Global.EVENTO_ABIERTO));
+				datosEvento.numeroParticipantes, fecha,
+				(datosEvento.numeroParticipantes == 1) ? em.find(Estado.class, Global.EVENTO_COMPLETO)
+						: em.find(Estado.class, Global.EVENTO_ABIERTO));
 
 		// Evento creado por municipio seleccionada o ubicación GPS seleccionada
 		if (datosEvento.municipio != null) {
@@ -322,7 +324,7 @@ public class EventoService {
 	}
 
 	public Evento modificarEventoDeportivo(RequestCrearEvento datosEvento, Long idUsuario, Long idEvento) {
-		Evento e = em.find(Evento.class,idEvento);
+		Evento e = em.find(Evento.class, idEvento);
 		if (e != null) {
 			// Fecha evento
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -335,7 +337,7 @@ public class EventoService {
 				}
 			}
 			e.setFechaEvento(fecha);
-			
+
 			// Título evento
 			e.setTitulo(datosEvento.titulo);
 			// Descripción evento
@@ -345,10 +347,43 @@ public class EventoService {
 			// Número de participantes
 			e.setNumeroParticipantes(datosEvento.numeroParticipantes);
 			// Estado evento
-			if (datosEvento.numeroParticipantes == 0)  e.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
-			else if ((datosEvento.numeroParticipantes == 1) || (datosEvento.numeroParticipantes <= e.getParticipantes().size())) e.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
-			else if (datosEvento.numeroParticipantes > e.getParticipantes().size()) e.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
-			
+			if (datosEvento.numeroParticipantes > e.getParticipantes().size() || datosEvento.numeroParticipantes == 0) {
+				e.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
+				// Si se ha pasado a aforo ilimitado trasladamos todos los usuarios de la cola
+				if (datosEvento.numeroParticipantes == 0) {
+					while (!e.getParticipantesEnCola().isEmpty()) {
+						Usuario usuarioEnCola = e.getParticipantesEnCola().get(0);
+						usuarioEnCola.getEventosEnCola().remove(e);
+						e.getParticipantesEnCola().remove(usuarioEnCola);
+						usuarioEnCola.addEventosRegistrado(e);
+						e.addParticipantes(usuarioEnCola);
+					}
+				}
+				// Si se ha augmentado la capacidad del evento y hay participantes en cola se
+				// traspasan como apuntados
+				else {
+					if (e.getParticipantesEnCola() != null && !e.getParticipantesEnCola().isEmpty()) {
+						int usuariosAtraspasar = datosEvento.numeroParticipantes - e.getParticipantes().size();
+						int usuariosTraspasados = 0;
+						while (!e.getParticipantesEnCola().isEmpty() && usuariosTraspasados < usuariosAtraspasar) {
+							Usuario usuarioEnCola = e.getParticipantesEnCola().get(0);
+							usuarioEnCola.getEventosEnCola().remove(e);
+							e.getParticipantesEnCola().remove(usuarioEnCola);
+							usuarioEnCola.addEventosRegistrado(e);
+							e.addParticipantes(usuarioEnCola);
+							usuariosTraspasados++;
+						}
+						if ((datosEvento.numeroParticipantes != 0) && ((datosEvento.numeroParticipantes == 1)
+								|| (datosEvento.numeroParticipantes <= e.getParticipantes().size())))
+							e.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
+
+					}
+				}
+
+			} else if ((datosEvento.numeroParticipantes == 1)
+					|| (datosEvento.numeroParticipantes <= e.getParticipantes().size()))
+				e.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
+
 			// Se ha seleccionado un nuevo municipio diferente al anterior
 			if (datosEvento.municipio != null && datosEvento.municipio != -1L) {
 				Municipio municipio = em.find(Municipio.class, datosEvento.municipio);
@@ -360,9 +395,8 @@ public class EventoService {
 				if (e.getUbicacionGPS() != null) {
 					em.remove(e.getUbicacionGPS());
 					e.setUbicacionGPS(null);
-				} 
-			}
-			else if (datosEvento.ubicacionGPS != null) {
+				}
+			} else if (datosEvento.ubicacionGPS != null) {
 				Query q = em.createNamedQuery("@HQL_GET_MUNICIPIO_BYNAME");
 				q.setParameter("municipio", datosEvento.ubicacionGPS.municipio.toLowerCase());
 				try {
@@ -375,8 +409,7 @@ public class EventoService {
 						e.getUbicacionGPS().setLatitud(datosEvento.ubicacionGPS.latitud);
 						e.getUbicacionGPS().setLongitud(datosEvento.ubicacionGPS.longitud);
 						e.getUbicacionGPS().setMunicipio(municipio);
-					}
-					else {
+					} else {
 						Ubicacion u = new Ubicacion(datosEvento.ubicacionGPS.latitud, datosEvento.ubicacionGPS.longitud,
 								datosEvento.ubicacionGPS.direccion, municipio);
 						e.setUbicacionGPS(u);
@@ -386,7 +419,7 @@ public class EventoService {
 					throw new EJBException("No existe el municipio");
 				}
 			}
-			
+
 			Deporte deporte = em.find(Deporte.class, datosEvento.deporte);
 			if (deporte != null) {
 				e.setDeporte(deporte);
@@ -396,7 +429,7 @@ public class EventoService {
 			eventoModificado.fire(e);
 			em.persist(e);
 			return e;
-		}  else {
+		} else {
 			throw new EJBException("El evento no existe");
 		}
 

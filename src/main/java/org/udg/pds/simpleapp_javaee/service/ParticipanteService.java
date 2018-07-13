@@ -46,8 +46,26 @@ public class ParticipanteService {
 				throw new EJBException("El evento ya ha finalizado");
 			else if (estadoEvento.getId().equals(Global.EVENTO_SUSPENDIDO))
 				throw new EJBException("El evento está suspendido");
-			else if (estadoEvento.getId().equals(Global.EVENTO_COMPLETO))
-				throw new EJBException("El evento ya está completo");
+			else if (estadoEvento.getId().equals(Global.EVENTO_COMPLETO)) {
+				Usuario usuario = em.find(Usuario.class, idUsuario);
+				if (usuario != null) {
+					if (!usuario.getEventosEnCola().contains(evento)) {
+						usuario.addEventosEnCola(evento);
+						evento.addParticipantesEnCola(usuario);
+						/*if (!evento.getAdministrador().getId().equals(idUsuario)) {
+							altaUsuarioEvento.fire(new NotificacionUsuarioEvento(evento, usuario));
+						}*/
+						/*if (evento.getNumeroParticipantes() == evento.getParticipantes().size()) {
+							evento.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
+						}*/
+						return evento;
+					} else
+						throw new EJBException("Ya está en la cola del evento");
+
+				} else
+					throw new EJBException("El usuario no existe");
+				//throw new EJBException("El evento ya está completo");	
+			}
 			else {
 				Usuario usuario = em.find(Usuario.class, idUsuario);
 				if (usuario != null) {
@@ -91,9 +109,32 @@ public class ParticipanteService {
 						}
 						if (evento.getNumeroParticipantes() > evento.getParticipantes().size()) {
 							evento.setEstado(em.find(Estado.class, Global.EVENTO_ABIERTO));
+							// Dar de alta al primer usuario de la cola
+							if (evento.getParticipantesEnCola() != null && evento.getParticipantesEnCola().size() > 0) {
+								Usuario usuarioEnCola = evento.getParticipantesEnCola().get(0);
+								usuarioEnCola.getEventosEnCola().remove(evento);
+								evento.getParticipantesEnCola().remove(usuarioEnCola);
+								usuarioEnCola.addEventosRegistrado(evento);
+								evento.addParticipantes(usuarioEnCola);
+								// Notificar alta al administrador del evento nuevo usuario añadido de la cola
+								if (!evento.getAdministrador().getId().equals(idUsuario)) {
+									altaUsuarioEvento.fire(new NotificacionUsuarioEvento(evento, usuario));
+								}
+								if (evento.getNumeroParticipantes() != 0 && evento.getNumeroParticipantes() == evento.getParticipantes().size()) {
+									evento.setEstado(em.find(Estado.class, Global.EVENTO_COMPLETO));
+								}
+								
+							}
 						}
 						return evento;
-					} else
+					}
+					// Dar de baja a un usuario de la cola de espera en un evento completo
+					else if (usuario.getEventosEnCola().contains(evento)) {
+						usuario.getEventosEnCola().remove(evento);
+						evento.getParticipantesEnCola().remove(usuario);
+						return evento;
+					}
+					else
 						throw new EJBException("No participas en el evento");
 				} else
 					throw new EJBException("No puede desregistrar otros usuarios de un evento");
@@ -104,14 +145,22 @@ public class ParticipanteService {
 			throw new EJBException("El evento no existe");
 	}
 
-	public List<Usuario> obtenerParticipantesEvento(Long idEvento, Long obtenerUsuarioLogeado) {
+	public List<Usuario> obtenerParticipantesEvento(Long idEvento, Long obtenerUsuarioLogeado, Long tipo) {
 		Evento evento = em.find(Evento.class, idEvento);
 		if (evento != null) {
 			List<Usuario> participantes = new ArrayList<>();
-			participantes = evento.getParticipantes();
+			if (tipo.equals(0L))
+				participantes = evento.getParticipantes();
+			else if (tipo.equals(1L))
+				participantes = evento.getParticipantesEnCola();
+			else if (tipo.equals(2L)) {
+				participantes.addAll(evento.getParticipantes());
+				participantes.addAll(evento.getParticipantesEnCola());
+			}
 			return participantes;
 		} else
 			throw new EJBException("El evento no existe");
 	}
+	
 
 }

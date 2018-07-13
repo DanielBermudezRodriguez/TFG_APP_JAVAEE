@@ -59,14 +59,17 @@ public class ParticipanteRESTService extends GenericRESTService {
 
 	}
 
+	// tipo = 0 ; Participantes registrados en el evento
+	// tipo = 1 ; Participantes en lista de espera del evento
+	// tipo = 2 ; Ambos participantes
 	@GET
-	@Path("{idEvento}")
+	@Path("{idEvento}/{tipo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response obtenerParticipantesEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento) {
+	public Response obtenerParticipantesEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento,@PathParam("tipo") Long tipo) {
 
 		if (estaUsuarioLogeado(req)) {
 			List<Usuario> participantes = participanteService.obtenerParticipantesEvento(idEvento,
-					obtenerUsuarioLogeado(req));
+					obtenerUsuarioLogeado(req),tipo);
 			List<ResponseUsuario.ResponseInformacionParticipante> responseParticipantes = new ArrayList<>();
 			for (Usuario participante : participantes) {
 				responseParticipantes.add(new ResponseUsuario.ResponseInformacionParticipante(participante));
@@ -77,5 +80,7 @@ public class ParticipanteRESTService extends GenericRESTService {
 		}
 
 	}
+	
+
 
 }

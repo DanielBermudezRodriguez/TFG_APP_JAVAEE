@@ -84,8 +84,20 @@ public class Usuario implements Serializable {
 	private List<Evento> eventosCreados;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "eventos_registrado",
+	    joinColumns = {@JoinColumn(name = "evento_ID")},
+	    inverseJoinColumns = {@JoinColumn(name = "participante_ID")}
+	  )
 	@JsonIgnore
 	private List<Evento> eventosRegistrado;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "eventos_en_cola",
+    joinColumns = {@JoinColumn(name = "evento_ID")},
+    inverseJoinColumns = {@JoinColumn(name = "participante_ID")}
+  )
+	@JsonIgnore
+	private List<Evento> eventosEnCola;
 
 	public Usuario() {
 	}
@@ -103,6 +115,7 @@ public class Usuario implements Serializable {
 		this.deportesFavoritos = new ArrayList<>();
 		this.eventosCreados = new ArrayList<>();
 		this.eventosRegistrado = new ArrayList<>();
+		this.eventosEnCola = new ArrayList<>();
 
 	}
 
@@ -219,6 +232,19 @@ public class Usuario implements Serializable {
 
 	public void addEventosRegistrado(Evento evento) {
 		this.eventosRegistrado.add(evento);
+	}
+	
+	public void addEventosEnCola(Evento evento) {
+		this.eventosEnCola.add(evento);
+	}
+
+	public List<Evento> getEventosEnCola() {
+		eventosEnCola.size();
+		return eventosEnCola;
+	}
+
+	public void setEventosEnCola(List<Evento> eventosEnCola) {
+		this.eventosEnCola = eventosEnCola;
 	}
 
 	public Subscripcion getSubscripcion() {

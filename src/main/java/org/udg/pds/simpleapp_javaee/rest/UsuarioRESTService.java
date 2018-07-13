@@ -110,6 +110,7 @@ public class UsuarioRESTService extends GenericRESTService {
 
 	// tipo = 0 ; Eventos creados y administrados por el usuario.
 	// tipo = 1 ; Eventos en los que está apuntado el usuario.
+	// tipo = 2 ; Eventos registrado en cola
 	@GET
 	@Path("evento/{idUsuario}/{tipo}")
 	@Produces(MediaType.APPLICATION_JSON)

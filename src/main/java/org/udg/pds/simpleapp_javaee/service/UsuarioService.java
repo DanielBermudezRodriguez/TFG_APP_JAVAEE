@@ -195,9 +195,13 @@ public class UsuarioService {
 			else if (tipo.equals(1L)) {
 				eventos = u.getEventosRegistrado();
 				Collections.sort(eventos, new EventosComparator());
+			}// Eventos en cola
+			else if (tipo.equals(2L)) {
+				eventos = u.getEventosEnCola();
+				Collections.sort(eventos, new EventosComparator());
 			} else
 				throw new EJBException(
-						"El tipo no es válido. Introduzca (0) para recuperar sus eventos creados o (1) para recuperar los eventos en que está inscrito");
+						"El tipo no es válido. Introduzca (0) para recuperar sus eventos creados,(1) para recuperar los eventos en que está inscrito o (2) para los eventos que está en cola.");
 			List<ResponseEvento.ResponseEventoInformacion> responseEventos = new ArrayList<>();
 			for (Evento e : eventos) {
 				// En caso de que se quieran obtener los eventos registrados, no devolvemos los eventos administrados y a la vez participe el administrador
