@@ -32,8 +32,7 @@ import java.util.Map;
 @RequestScoped
 public class ImagenRESTService extends GenericRESTService {
 
-	// public static final java.nio.file.Path BASE_DIR =
-	// Paths.get(System.getenv(Global.VARIABLE_SISTEMA_IMAGENES));
+
 	public static final java.nio.file.Path BASE_DIR_IMAGES_USERS = Paths
 			.get(System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS));
 	public static final java.nio.file.Path BASE_DIR_IMAGES_EVENTS = Paths
@@ -179,38 +178,10 @@ public class ImagenRESTService extends GenericRESTService {
 		int read;
 		byte[] bytes = new byte[1024];
 
-		// Comprimir imagen
 		BufferedImage original = ImageIO.read(uploadedInputStream);
-		//BufferedImage image = resize(original, 500, 500); // resize a 500px x 500 px
 		File output = new File(serverLocation);
-		//ImageIO.write(image, "jpg", output); // jpg muxo menos tamaño que png
-		ImageIO.write(original, "jpg", output); // jpg muxo menos tamaño que png
-		// FRAGMENTO CÓDIGO BAJAR CALIDAD
+		ImageIO.write(original, "jpg", output); 
 
-		// double aspectRatio = (double) img.getWidth(null)/(double)
-		// img.getHeight(null);
-		// tempPNG = resizeImage(img, 100, (int) (100/aspectRatio));
-
-		/*
-		 * OutputStream os = new FileOutputStream(new File(serverLocation));
-		 * Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-		 * ImageWriter writer = (ImageWriter) writers.next(); ImageOutputStream ios =
-		 * new MemoryCacheImageOutputStream(os); writer.setOutput(ios);
-		 * 
-		 * ImageWriteParam param = writer.getDefaultWriteParam();
-		 * 
-		 * param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		 * param.setCompressionQuality(1f); // Change the quality value you prefer
-		 * writer.write(null, new IIOImage(image, null, null), param);
-		 * 
-		 * os.close(); ios.close(); writer.dispose();
-		 */
-
-		/*
-		 * while ((read = uploadedInputStream.read(bytes)) != -1) {
-		 * outpuStream.write(bytes, 0, read); } outpuStream.flush();
-		 * outpuStream.close();
-		 */
 	}
 
 	private static BufferedImage resize(BufferedImage img, int height, int width) {
