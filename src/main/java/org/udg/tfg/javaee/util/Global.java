@@ -9,7 +9,8 @@ package org.udg.tfg.javaee.util;
 public class Global {
 
 	/**
-	 * Literal utilizado para obtener la sesión del usuario actual de la clase HttpSession.
+	 * Literal utilizado para obtener la sesión del usuario actual de la clase
+	 * HttpSession.
 	 */
 	public static final String AUTH_ID = "simpleapp_auth_id";
 	/**
@@ -29,15 +30,18 @@ public class Global {
 	 */
 	public static final Long EVENTO_FINALIZADO = 4L;
 	/**
-	 * Valor constante en Kilómetros para calcular la distancia GPS entre dos posiciones.
+	 * Valor constante en Kilómetros para calcular la distancia GPS entre dos
+	 * posiciones.
 	 */
 	public static final double KM_DISTANCIA = 6371;
 	/**
-	 * Fórmula para calcular la distancia GPS entre la posición GPS de un evento deportivo y la posición GPS de un dispositivo móvil.
+	 * Fórmula para calcular la distancia GPS entre la posición GPS de un evento
+	 * deportivo y la posición GPS de un dispositivo móvil.
 	 */
 	public static final String FORMULA_DISTANCIA_GPS = " ( :km * acos(cos(radians(:latitud) ) * cos(radians( e.ubicacionGPS.latitud ) ) * cos(radians( e.ubicacionGPS.longitud ) - radians(:longitud) ) + sin (radians(:latitud) ) * sin(radians( e.ubicacionGPS.latitud )))) ";
 	/**
-	 * Fórmula para calcular la distancia GPS entre la posición GPS de un evento deportivo y la posición GPS de un municipio.
+	 * Fórmula para calcular la distancia GPS entre la posición GPS de un evento
+	 * deportivo y la posición GPS de un municipio.
 	 */
 	public static final String FORMULA_DISTANCIA_GPS_ESTIMADA = " ( :km * acos ( cos ( radians(:latitud) ) * cos( radians( e.municipio.latitudEstimada ) ) * cos( radians( e.municipio.longitudEstimada ) - radians(:longitud) ) + sin ( radians(:latitud) ) * sin( radians( e.municipio.latitudEstimada )))) ";
 	/**
@@ -57,7 +61,8 @@ public class Global {
 	 */
 	public static final String VARIABLE_ENTORNO_IMAGENES_USUARIOS = "DIR_TFG_IMAGES_USERS";
 	/**
-	 * Variable de entorno de las imagenes de los eventos deportivos de la aplicación.
+	 * Variable de entorno de las imagenes de los eventos deportivos de la
+	 * aplicación.
 	 */
 	public static final String VARIABLE_ENTORNO_IMAGENES_EVENTOS = "DIR_TFG_IMAGES_EVENTS";
 	/**
@@ -77,7 +82,8 @@ public class Global {
 	 */
 	public static final String NOTIFICACION_EVENTO_ALTA_USUARIO = "3";
 	/**
-	 * Tipo de notificación para cuando un usuario es eliminado de un evento por el administrador.
+	 * Tipo de notificación para cuando un usuario es eliminado de un evento por el
+	 * administrador.
 	 */
 	public static final String NOTIFICACION_EVENTO_BAJA_USUARIO = "4";
 	/**
