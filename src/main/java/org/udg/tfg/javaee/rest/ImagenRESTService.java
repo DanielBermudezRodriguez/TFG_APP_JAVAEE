@@ -6,7 +6,6 @@ import org.udg.tfg.javaee.model.Imagen;
 import org.udg.tfg.javaee.service.EventoService;
 import org.udg.tfg.javaee.service.UsuarioService;
 import org.udg.tfg.javaee.util.Global;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.imageio.ImageIO;
@@ -17,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Paths;
@@ -32,7 +29,6 @@ import java.util.Map;
 @RequestScoped
 public class ImagenRESTService extends GenericRESTService {
 
-
 	public static final java.nio.file.Path BASE_DIR_IMAGES_USERS = Paths
 			.get(System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS));
 	public static final java.nio.file.Path BASE_DIR_IMAGES_EVENTS = Paths
@@ -40,7 +36,7 @@ public class ImagenRESTService extends GenericRESTService {
 
 	@EJB
 	UsuarioService usuarioService;
-	
+
 	@EJB
 	EventoService eventoService;
 
@@ -52,8 +48,7 @@ public class ImagenRESTService extends GenericRESTService {
 			@PathParam("idEvento") Long idEvento) {
 		if (estaUsuarioLogeado(req)) {
 			List<String> imagenSubida = subirImagenEvento(input, idEvento);
-			Imagen imagen = eventoService.guardarImagenEvento(idEvento, imagenSubida,
-					BASE_DIR_IMAGES_EVENTS);
+			Imagen imagen = eventoService.guardarImagenEvento(idEvento, imagenSubida, BASE_DIR_IMAGES_EVENTS);
 			return buildResponse(imagen);
 		} else {
 			throw new WebApplicationException("No ha iniciado sesión");
@@ -78,11 +73,12 @@ public class ImagenRESTService extends GenericRESTService {
 	@GET
 	@Path("/usuario/nombre/{idUsuario}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response obtenerNombreImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario) {
+	public Response obtenerNombreImagenUsuario(@Context HttpServletRequest req,
+			@PathParam("idUsuario") Long idUsuario) {
 		String nombreImagen = usuarioService.obtenerImagen(idUsuario);
 		return buildResponse(nombreImagen);
 	}
-	
+
 	@GET
 	@Path("/evento/nombre/{idEvento}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -90,23 +86,25 @@ public class ImagenRESTService extends GenericRESTService {
 		String nombreImagen = eventoService.obtenerImagen(idEvento);
 		return buildResponse(nombreImagen);
 	}
-	
+
 	@GET
 	@Path("/usuario/{idUsuario}/{nombreImagen}")
 	@Produces({ "image/png", "image/jpg" })
-	public Response obtenerImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario, @PathParam("nombreImagen") String nombreImg) {
+	public Response obtenerImagenUsuario(@Context HttpServletRequest req, @PathParam("idUsuario") Long idUsuario,
+			@PathParam("nombreImagen") String nombreImg) {
 		String nombreImagen = usuarioService.obtenerImagen(idUsuario);
 		File file = new File(BASE_DIR_IMAGES_USERS.toString() + "\\" + nombreImagen);
 		ResponseBuilder response = Response.ok((Object) file);
 		response.header("Content-Disposition", "attachment; filename=" + nombreImagen);
 		return response.build();
 	}
-	
+
 	@GET
 	@Path("/evento/{idEvento}/{nombreImagen}")
 	@Produces({ "image/png", "image/jpg" })
-	public Response obtenerImagenEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento, @PathParam("nombreImagen") String nombreImg) {
-		//String nombreImagen = usuarioService.obtenerImagen(idUsuario);
+	public Response obtenerImagenEvento(@Context HttpServletRequest req, @PathParam("idEvento") Long idEvento,
+			@PathParam("nombreImagen") String nombreImg) {
+		// String nombreImagen = usuarioService.obtenerImagen(idUsuario);
 		String nombreImagen = eventoService.obtenerImagen(idEvento);
 		File file = new File(BASE_DIR_IMAGES_EVENTS.toString() + "\\" + nombreImagen);
 		ResponseBuilder response = Response.ok((Object) file);
@@ -135,7 +133,7 @@ public class ImagenRESTService extends GenericRESTService {
 				MultivaluedMap<String, String> headers = inputPart.getHeaders();
 				String nombreImagen = crearNombreImagen(idUsuario, headers);
 				InputStream istream = inputPart.getBody(InputStream.class, null);
-				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS)+ "\\" + nombreImagen;
+				String rutaImagen = System.getenv(Global.VARIABLE_ENTORNO_IMAGENES_USUARIOS) + "\\" + nombreImagen;
 				saveFile(istream, rutaImagen);
 				imagenesSubidas.add(nombreImagen);
 			} catch (Exception e) {
@@ -175,22 +173,10 @@ public class ImagenRESTService extends GenericRESTService {
 
 	private void saveFile(InputStream uploadedInputStream, String serverLocation) throws IOException {
 
-		int read;
-		byte[] bytes = new byte[1024];
-
 		BufferedImage original = ImageIO.read(uploadedInputStream);
 		File output = new File(serverLocation);
-		ImageIO.write(original, "jpg", output); 
+		ImageIO.write(original, "jpg", output);
 
-	}
-
-	private static BufferedImage resize(BufferedImage img, int height, int width) {
-		Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-		BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = resized.createGraphics();
-		g.drawImage(tmp, 0, 0, null);
-		g.dispose();
-		return resized;
 	}
 
 	private String obtenerExtension(MultivaluedMap<String, String> headers) {
