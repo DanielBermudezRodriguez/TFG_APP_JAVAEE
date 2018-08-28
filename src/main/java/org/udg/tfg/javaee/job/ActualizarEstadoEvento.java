@@ -22,7 +22,7 @@ public class ActualizarEstadoEvento {
 	@Inject
 	private Logger log;
 
-	@Schedule(second = "*/30", minute = "*", hour = "*", persistent = false)
+	@Schedule(second = "*/60", minute = "*", hour = "*", persistent = false)
 	public void doWork() {
 		List<Evento> eventos = eventoService.obtenerEventosNoFinalizados();
 		log.log(Level.INFO, "Eventos recuperados: " + eventos.size());
@@ -34,3 +34,4 @@ public class ActualizarEstadoEvento {
 	}
 
 }
+
